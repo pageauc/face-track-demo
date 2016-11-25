@@ -26,7 +26,7 @@ This program requires an openelectrons pan/tilt assembly and servo controller in
 and tested see http://www.mindsensors.com/rpi/33-pi-pan. See web site for installation details. 
 This program installs and uses servo blaster and the pipan python
 library.  See the face-track-install.sh for details.  Support programs and utilities are installed
-in the /home/pi/pipan folder.  These can be used to test the openelectrons pan/tilt operation.
+in the /home/pi/pi-pan folder.  These can be used to test the openelectrons pan/tilt operation.
 
 Default is Jessie GUI desktop display. Use Nano to Edit config.py variables. 
 default is window_on=True

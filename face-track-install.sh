@@ -46,17 +46,17 @@ chmod +x face-track-install.sh
 echo "Done Permissions"
 echo "------------------------------------------------"
 echo ""
-echo "3 - Install pipan files to /home/pi/pipan"
+echo "3 - Install pi-pan files to /home/pi/pi-pan"
 cd ~
 echo "Downloading http://www.mindsensors.com/largefiles/pi-pan-2016-Jessie.tar.gz"
 wget http://www.mindsensors.com/largefiles/pi-pan-2016-Jessie.tar.gz
 echo "Extracting files to /home/pi/pi-pan folder"
 tar -zxvf pi-pan-2016-Jessie.tar.gz
-echo "Download and Install pipan python library"
+echo "Download and Install pi-pan python library"
 sudo -y apt-get install python-setuptools
 sudo -y easy_install pip
 sudo pip install pipan
-cd ~/pipan
+cd ~/pi-pan
 # Check if servod file exists and install
 if [ -e  servod ]
 then
@@ -79,7 +79,7 @@ else
     echo "ERROR - Missing servoblaster.sh Possible cause bad download"
     exit 1
 fi
-echo "Done pipan and servoblaster install"
+echo "Done pi-pan and servoblaster install"
 echo "------------------------------------------------"
 echo ""
 # check if system was updated today
