@@ -69,11 +69,13 @@ These can be found in the folder
 Change the config.py file face_haar_path variable.    
     
 ### Prerequisites
-IMPORTANT - You must have the RPI connected to a network with internet access.     
-Requires a Quad core Raspberry Pi computer (recommended). You must be running with an up-to-date raspbian jessie distro and a
-RPI camera module installed on an OpenElectrons Pan/Tilt assembly and configured and tested. Library Dependencies will be 
-installed/upgraded per face-track-install.sh depending on your previous installs.  Note a sudo apt-get update and upgrade
-will be performed as part of the automated install so 
+IMPORTANT - You must have the RPI connected to a network with internet access during the installation.  No
+internet connection is required otherwise.       
+For best results use a Quad core Raspberry Pi computer (recommended). You must be running with an up-to-date raspbian jessie distro and a
+RPI camera module installed on an OpenElectrons Pan/Tilt assembly that has been installed, configured and tested.
+Required python and servoblaster files and library Dependencies will be 
+installed/upgraded per face-track-install.sh script depending on your previous installs.  Note a sudo apt-get update and upgrade
+will be performed as part of the automated install so it may take some time depending on how up-to-date your system is. 
 
 ### Disable Camera LED
 
