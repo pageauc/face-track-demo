@@ -121,6 +121,7 @@ if [ "$DIR" != "$INSTALL_PATH" ]; then
   if [ -e 'face-track-install.sh' ]; then
     echo "$STATUS Cleanup face-track-install.sh"
     rm face-track-install.sh
+    rm pi-pan-2016-Jessie.tar.gz
   fi
 fi
 echo "-----------------------------------------------"
