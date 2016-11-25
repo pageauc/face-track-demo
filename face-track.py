@@ -7,7 +7,7 @@ motion-track ver 0.50 is written by Claude Pageau pageauc@gmail.com
 Raspberry (Pi) - python opencv2 motion and face tracking using picamera module
 attached to an openelectrons pan/tilt assembly http://www.mindsensors.com/rpi/33-pi-pan
 
-For more details see github repo https://raw.github.com/pageauc/face-track-demo
+For more details see github repo https://github.com/pageauc/face-track-demo
 
 This is a raspberry pi python opencv2 motion and face tracking demonstration program.
 It will detect motion or face in the field of view and use opencv to calculate the
