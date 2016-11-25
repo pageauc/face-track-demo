@@ -48,6 +48,7 @@ echo "------------------------------------------------"
 echo ""
 echo "3 - Install pi-pan files to /home/pi/pi-pan"
 cd ~
+rm pi-pan-2016-Jessie.tar.gz 
 echo "Downloading http://www.mindsensors.com/largefiles/pi-pan-2016-Jessie.tar.gz"
 wget http://www.mindsensors.com/largefiles/pi-pan-2016-Jessie.tar.gz
 echo "Extracting files to /home/pi/pi-pan folder"
@@ -121,9 +122,9 @@ if [ "$DIR" != "$INSTALL_PATH" ]; then
   if [ -e 'face-track-install.sh' ]; then
     echo "$STATUS Cleanup face-track-install.sh"
     rm face-track-install.sh
-    rm pi-pan-2016-Jessie.tar.gz
   fi
 fi
+rm ~/pi-pan-2016-Jessie.tar.gz  
 echo "-----------------------------------------------"
 echo "6 - $STATUS Complete"
 echo "-----------------------------------------------"
