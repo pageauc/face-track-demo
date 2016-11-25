@@ -22,7 +22,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo "------------------------------------------------"
 echo "  face-track-Install.sh script ver $ver"
 echo "  $STATUS face-track for OpenElectrons Pan/Tilt"
-echo "  Face and Motion Tracking Pan/Tilt Camera Demo
+echo "  Face and Motion Tracking Pan/Tilt Camera Demo"
 echo "------------------------------------------------"
 echo ""
 echo "1 - Downloading GitHub Repo files to $INSTALL_PATH"
