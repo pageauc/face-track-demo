@@ -23,10 +23,13 @@ From logged in RPI SSH session or console terminal perform the following.
 
 ### How to Run
 This program requires an openelectrons pan/tilt assembly and servo controller installed
-and tested.  This program installs and uses servo blaster as well and the pipan python
-library.  See the face-track-install.sh for details.
+and tested see http://www.mindsensors.com/rpi/33-pi-pan. See web site for installation details. 
+This program installs and uses servo blaster and the pipan python
+library.  See the face-track-install.sh for details.  Support programs and utilities are installed
+in the /home/pi/pipan folder.  These can be used to test the openelectrons pan/tilt operation.
 
-Default is Jessie GUI desktop display. Use Nano to Edit config.py variable window_on=True
+Default is Jessie GUI desktop display. Use Nano to Edit config.py variables. 
+default is window_on=True
 to display the opencv tracking window on GUI desktop. See other variables
 and descriptions for additional variable customization settings.
 From SSH session, console or GUI desktop terminal session execute the following commands 

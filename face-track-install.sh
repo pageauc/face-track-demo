@@ -26,16 +26,16 @@ echo "  Face and Motion Tracking Pan/Tilt Camera Demo
 echo "------------------------------------------------"
 echo ""
 echo "1 - Downloading GitHub Repo files to $INSTALL_PATH"
-wget -O face-track-install.sh -q --show-progress https://raw.github.com/pageauc/face-track/master/face-track-install.sh
+wget -O face-track-install.sh -q --show-progress https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh
 if [ $? -ne 0 ] ;  then
-  wget -O face-track-install.sh https://raw.github.com/pageauc/face-track/master/face-track-install.sh
-  wget -O face-track.py https://raw.github.com/pageauc/face-track/master/face-track.py 
-  wget -O config.py https://raw.github.com/pageauc/face-track/master/config.py  
-  wget -O Readme.md https://raw.github.com/pageauc/face-track/master/Readme.md  
+  wget -O face-track-install.sh https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh
+  wget -O face-track.py https://raw.github.com/pageauc/face-track-demo/master/face-track.py 
+  wget -O config.py https://raw.github.com/pageauc/face-track-demo/master/config.py  
+  wget -O Readme.md https://raw.github.com/pageauc/face-track-demo/master/Readme.md  
 else
-  wget -O face-track.py -q --show-progress https://raw.github.com/pageauc/face-track/master/face-track.py
-  wget -O config.py -q --show-progress https://raw.github.com/pageauc/face-track/master/config.py    
-  wget -O Readme.md -q --show-progress  https://raw.github.com/pageauc/face-track/master/Readme.md  
+  wget -O face-track.py -q --show-progress https://raw.github.com/pageauc/face-track-demo/master/face-track.py
+  wget -O config.py -q --show-progress https://raw.github.com/pageauc/face-track-demo/master/config.py    
+  wget -O Readme.md -q --show-progress  https://raw.github.com/pageauc/face-track-demo/master/Readme.md  
 fi
 echo "Done Download"
 echo "------------------------------------------------"
