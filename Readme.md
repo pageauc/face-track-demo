@@ -87,7 +87,7 @@ the cascade file path to test other body parts per cascade files.  These can be 
 
     /usr/share/opencv/haarcascades
 
-change the config.py file haarpath variable.    
+change the config.py file face_haar_path variable.    
     
 ### Prerequisites
 Requires a Quad core Raspberry Pi computer is recommended.  You must be running with an up-to-date raspbian jessie distro and a
