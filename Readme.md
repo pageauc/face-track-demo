@@ -3,7 +3,7 @@
 ### Tracks Face or Motion using an open electrons pan/tilt assembly http://www.mindsensors.com/rpi/33-pi-pan
 
 ### Quick Install   
-Easy Install of motion-track-demo onto a Raspberry Pi Computer with latest Raspbian. 
+Easy Install of face-track-demo onto a Raspberry Pi Computer with latest Raspbian Jessie (recommended). 
 
     curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh | bash
 
