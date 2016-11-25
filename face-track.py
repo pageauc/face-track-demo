@@ -23,7 +23,7 @@ is based on the motion-track code
 Requires a Raspberry Pi with a RPI camera module installed and configured
 . Cut and paste command below into a terminal sesssion to
 download and install face_track demo.  Program will be installed to
-~/face-track-demo folder.
+~/face-track-demo folder and pan/tilt support files in ./pi-pan.
 
 curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh | bash
 
