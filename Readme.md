@@ -88,9 +88,9 @@ revert back to looking for motion.
 * If there there is no face or motion detected for a longer delay then
 the camera will pan and tilt to look around until motion or a face is detected.   
 
-This setup may need to be tuned for your needs using the variable in the config.py file.
-I have tested this on a RPI 3 and RPI B (single core) and performance is reasonable although pretty
-laggy on a single core RPI. Face detection takes a bit longer than regular opencv motion detection.   
+This setup may need to be tuned for your needs using the variables in the config.py file.
+I have tested this on a RPI 3 (quad core) and RPI B (single core). Performance on the RPI3 is reasonable although pretty
+laggy on the single core RPI B. Face detection takes a bit longer than regular opencv motion detection.   
 You may want to change the cascade file path to test other body parts per cascade files.     
 These can be found in the folder
 
