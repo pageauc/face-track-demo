@@ -41,7 +41,7 @@ From SSH session, console or GUI desktop terminal session execute the following 
 This Demo program detects motion and/or faces in the field of view and uses opencv to calculate the 
 largest contour above a minimum size and return its x,y coordinate. 
 * Motion Track Demo YouTube Video http://youtu.be/09JS7twPBsQ  
-* GitHub Repo https://github.com/pageauc/face-track
+* GitHub Repo https://github.com/pageauc/face-track-demo
 
 ## ---------- Other Raspberry Pi Projects Based on Motion Tracking ------------
 
