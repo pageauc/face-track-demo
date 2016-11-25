@@ -9,7 +9,7 @@ Easy Install of face-track-demo onto a Raspberry Pi Computer with latest Raspbia
 
 From a computer logged into the RPI via ssh(Putty) session use mouse to highlight command above, right click, copy.  
 Then select ssh(Putty) window, mouse right click, paste.  The command should 
-download and execute the github motion-track-install.sh script and install the motion-track-demo.  
+download and execute the github face-track-install.sh script and install the face-track-demo project.  
 This install can also be done directly on an Internet connected Raspberry Pi via a console or desktop terminal session and web browser.      
 Note - a raspbian apt-get update and upgrade will be performed as part of install 
 so it may take some time if these are not up-to-date
