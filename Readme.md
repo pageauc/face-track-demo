@@ -77,12 +77,32 @@ take a look at the code to see how it works, change variables or game logic.
 ### Introduction
 I did quite a bit of searching on the internet, github, etc, but could not
 at the time find a similar python picamera implementation that returns x,y coordinates of
-the most dominate moving object in the frame although some came close.  
+the most dominate moving object in the frame although some came close. I have added face tracking.
+If no motion is detected for a while then face detection will be started and will time out after
+a while if no face is found.  If there is a longer delay with no face or motion detected then
+the camera will pan and tilt to look around until motion or a face is detected.  This setup may
+need to be tuned for your needs.  I have tested this on a RPI 3 and performance is reasonable.
+Face detection takes a bit longer than regular opencv motion detection.  You may want to change
+the cascade file path to test other body parts per cascade files.  These can be found in the folder
 
+    /usr/share/opencv/haarcascades
+
+change the config.py file haarpath variable.    
+    
 ### Prerequisites
 Requires a Quad core Raspberry Pi computer is recommended.  You must be running with an up-to-date raspbian jessie distro and a
 RPI camera module installed on an OpenElectrons Pan/Tilt assembly and configured. The dependencies may be 
 installed per face-track-install.sh depending on your previous installs.
+
+### Disable Camera LED
+
+To disable the red LED you simply need to add the following line to your config.txt file :
+
+    disable_camera_led=1
+    
+To edit the config.txt file you can use Nano :
+
+    sudo nano /boot/config.txt
 
 ### Trouble Shooting
     
@@ -98,18 +118,8 @@ Edit the config.py file and set variable window_on = True so the opencv status w
 motion images and a motion circle or face rectangle marking x,y coordinates as well as
 the threshold images.  The circle diameter can be change using CIRCLE_SIZE
 variable.  
-You can set window_on = False if you need to run from SSH session.  If debug
-= True then status information will be displayed without a GUI desktop session.
-
-### Disable Camera LED
-
-To disable the red LED you simply need to add the following line to your config.txt file :
-
-    disable_camera_led=1
-    
-To edit the config.txt file you can use Nano :
-
-    sudo nano /boot/config.txt
+You can set window_on = False if you need to run from SSH session.  If debug=True
+then status information will be displayed without a GUI desktop session.
 
 ### Credits  
 Some of this code is based on a YouTube tutorial by
