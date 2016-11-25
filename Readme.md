@@ -82,7 +82,7 @@ the most dominate moving object in the frame although some came close. I have ad
 * If motion is detected then the largest moving contour will be tracked and a circle will
 indicate the center of the opencv contour   
 * If no motion is detected for a while then face detection will be started.   
-* If a face is found then it will be tracked.   
+* If a face is found then it will be tracked and a rectangle will highlight the face contour.   
 * If a face cannot be found after a specified number of retries then detection will
 revert back to looking for motion.   
 * If there there is no face or motion detected for a longer delay then
