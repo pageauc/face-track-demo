@@ -10,9 +10,10 @@ Easy Install of face-track-demo onto a Raspberry Pi Computer with latest Raspbia
 From a computer logged into the RPI via ssh(Putty) session use mouse to highlight command above, right click, copy.  
 Then select ssh(Putty) window, mouse right click, paste.  The command should 
 download and execute the github face-track-install.sh script and install the face-track-demo project.  
-This install can also be done directly on an Internet connected Raspberry Pi via a console or desktop terminal session and web browser.      
-Note - a raspbian apt-get update and upgrade will be performed as part of install 
-so it may take some time if these are not up-to-date
+This install can also be done directly on an Internet connected Raspberry Pi
+via SSH (Putty), console or gui desktop terminal session and web a browser if you wish to copy the link.       
+Note - a Raspbian sudo apt-get update and upgrade will be performed as part of install 
+so it may take some time if these are not up-to-date.
 
 #### or Manual Install   
 From logged in RPI SSH session or console terminal perform the following.
@@ -29,17 +30,17 @@ library.  See the face-track-install.sh for details.  Support programs and utili
 in the /home/pi/pi-pan folder.  These can be used to test the openelectrons pan/tilt operation.
 
 Default is Jessie GUI desktop display. Use Nano to Edit config.py variables. 
-default is window_on=True
-to display the opencv tracking window on GUI desktop. See other variables
-and descriptions for additional variable customization settings.
+default is window_on=True to display the opencv tracking window on GUI desktop.   
+See other variables and descriptions for additional variable customization settings.
 From SSH session, console or GUI desktop terminal session execute the following commands 
 
     cd ~/face-track-demo
     ./face-track.py   
     
-### face-track.py - Face and Motion Track Demo - Basic concept of tracking moving objects
+### Face and Motion Track Demo - Basic concept of tracking moving objects
 This Demo program detects motion and/or faces in the field of view and uses opencv to calculate the 
-largest contour above a minimum size and return its x,y coordinate. 
+largest contour above a minimum size and return its x,y coordinate.  The object is then tracked using
+the camera pan/tilt (within the range of motion available) 
 * Motion Track Demo YouTube Video http://youtu.be/09JS7twPBsQ  
 * GitHub Repo https://github.com/pageauc/face-track-demo
 
@@ -68,9 +69,11 @@ These can be found in the folder
 Change the config.py file face_haar_path variable.    
     
 ### Prerequisites
-Requires a Quad core Raspberry Pi computer is recommended.  You must be running with an up-to-date raspbian jessie distro and a
-RPI camera module installed on an OpenElectrons Pan/Tilt assembly and configured. The dependencies may be 
-installed per face-track-install.sh depending on your previous installs.
+IMPORTANT - You must have the RPI connected to a network with internet access.     
+Requires a Quad core Raspberry Pi computer (recommended). You must be running with an up-to-date raspbian jessie distro and a
+RPI camera module installed on an OpenElectrons Pan/Tilt assembly and configured and tested. Library Dependencies will be 
+installed/upgraded per face-track-install.sh depending on your previous installs.  Note a sudo apt-get update and upgrade
+will be performed as part of the automated install so 
 
 ### Disable Camera LED
 
