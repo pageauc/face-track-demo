@@ -5,7 +5,7 @@
 ### Quick Install   
 Easy Install of motion-track-demo onto a Raspberry Pi Computer with latest Raspbian. 
 
-    curl -L https://raw.github.com/pageauc/face-track/master/face-track-install.sh | bash
+    curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh | bash
 
 From a computer logged into the RPI via ssh(Putty) session use mouse to highlight command above, right click, copy.  
 Then select ssh(Putty) window, mouse right click, paste.  The command should 
@@ -17,7 +17,7 @@ so it may take some time if these are not up-to-date
 #### or Manual Install   
 From logged in RPI SSH session or console terminal perform the following.
 
-    wget https://raw.github.com/pageauc/face-track/master/face-track-install.sh
+    wget https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh
     chmod +x face-track-install.sh
     ./face-track-install.sh
 
