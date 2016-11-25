@@ -78,16 +78,25 @@ take a look at the code to see how it works, change variables or game logic.
 I did quite a bit of searching on the internet, github, etc, but could not
 at the time find a similar python picamera implementation that returns x,y coordinates of
 the most dominate moving object in the frame although some came close. I have added face tracking.
-If no motion is detected for a while then face detection will be started and will time out after
-a while if no face is found.  If there is a longer delay with no face or motion detected then
-the camera will pan and tilt to look around until motion or a face is detected.  This setup may
-need to be tuned for your needs.  I have tested this on a RPI 3 and performance is reasonable.
-Face detection takes a bit longer than regular opencv motion detection.  You may want to change
-the cascade file path to test other body parts per cascade files.  These can be found in the folder
+
+* If motion is detected then the largest moving contour will be tracked and a circle will
+indicate the center of the opencv contour   
+* If no motion is detected for a while then face detection will be started.   
+* If a face is found then it will be tracked.   
+* If a face cannot be found after a specified number of retries then detection will
+revert back to looking for motion.   
+* If there there is no face or motion detected for a longer delay then
+the camera will pan and tilt to look around until motion or a face is detected.   
+
+This setup may need to be tuned for your needs using the variable in the config.py file.
+I have tested this on a RPI 3 and RPI B (single core) and performance is reasonable although pretty
+laggy on a single core RPI. Face detection takes a bit longer than regular opencv motion detection.   
+You may want to change the cascade file path to test other body parts per cascade files.     
+These can be found in the folder
 
     /usr/share/opencv/haarcascades
 
-change the config.py file face_haar_path variable.    
+Change the config.py file face_haar_path variable.    
     
 ### Prerequisites
 Requires a Quad core Raspberry Pi computer is recommended.  You must be running with an up-to-date raspbian jessie distro and a
