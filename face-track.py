@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track.py"
-ver = "version 0.50"
+ver = "version 0.51"
 
 """
 motion-track ver 0.50 is written by Claude Pageau pageauc@gmail.com
@@ -144,7 +144,15 @@ def show_FPS(start_time,frame_count):
     return start_time, frame_count
 
 #-----------------------------------------------------------------------------------------------      
-def pan_goto(x, y):    # Move the pan/tilt to a specific location. 
+def pan_goto(x, y):    # Move the pan/tilt to a specific location.
+    if x <  pan_x_left:
+        x = pan_x_left + pan_move_x
+    elif x > pan_x_right:
+        x = pan_x_right - pan_move_x
+    elif y < pan_y_top:
+        y = pan_y_top + pan_move_y
+    elif y > pan_y_bottom:
+        y = pan_y_bottom - pan_move_y 
     p.do_pan(int(x))
     p.do_tilt(int(y))
     if verbose:
