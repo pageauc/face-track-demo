@@ -47,7 +47,7 @@ configFilePath = baseDir + "config.py"
 if not os.path.exists(configFilePath):
     print("ERROR - Missing config.py file - Could not find Configuration file %s" % (configFilePath))
     import urllib2
-    config_url = "https://raw.github.com/pageauc/motion-track/master/config.py"
+    config_url = "https://raw.github.com/pageauc/face-track/master/config.py"
     print("   Attempting to Download config.py file from %s" % ( config_url ))
     try:
         wgetfile = urllib2.urlopen(config_url)
