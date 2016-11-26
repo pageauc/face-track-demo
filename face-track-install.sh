@@ -61,6 +61,8 @@ cd ~/pi-pan
 # Check if servod file exists and install
 if [ -e  servod ]
 then
+    if [ -e /etc/init.d/servoblaster.sh ]
+        sudo /etc/init.d/servoblaster.sh stop > /dev/null
     sudo cp servod /usr/local/sbin
 else
     echo "ERROR - missing servod. Possible cause bad download."
