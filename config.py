@@ -35,8 +35,8 @@ pan_y_bottom = 160
 pan_move_x = int(CAMERA_WIDTH / 8)  # Amount to pan left/right in search mode
 pan_move_y = int(CAMERA_HEIGHT / 8) # Amount to pan up/down in search mode
 
-inactivity_timer = 2  # seconds to Wait before starting a pan/tilt search
-inactivity_cnt = 8    # Number of loops to delay before starting pan/tilt search
+inactivity_timer = 2   # seconds to Wait before starting a pan/tilt search
+inactivity_cnt = 25    # Number of loops to stay in motion detect before switching
 
 # OpenCV Settings
 face_haar_path = '/usr/share/opencv/haarcascades/haarcascade_frontalface_default.xml'
