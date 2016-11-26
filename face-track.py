@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track.py"
-ver = "version 0.52"
+ver = "version 0.53"
 
 """
 motion-track ver 0.50 is written by Claude Pageau pageauc@gmail.com
@@ -245,8 +245,8 @@ def face_track():
                         pan_cy = pan_cy + pan_move_y
                         if pan_cy > pan_y_top:
                             pan_cy = pan_y_bottom     
-                    if verbose:
-                        print("Face Search: loop_cnt=%i Timer=%d  > %s seconds" % (loop_cnt, elapsed_time, wait_time))
+                    if debug:
+                        print("face_track - Reposition Pan/Tilt loop_cnt=%i Inactivity_timer=%d  > %s seconds" % (loop_cnt, inactivity_timer, time.time() - inactivity_start))
                     pan_goto (pan_cx, pan_cy)
             else:
                 face_cnt += 1     

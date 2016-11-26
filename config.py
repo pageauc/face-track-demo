@@ -28,23 +28,21 @@ pan_y_start = 130  # initial y start position
 # pan_start = (100, 130) # x y start position of camera pan/tilt
 pan_move_x = 50
 pan_move_y = 30
+
 # bounds checking for pan/tilt search.
-pan_y_bottom = 160
-pan_y_top = 50
+pan_x_left = 20
+pan_x_right = 160
+pan_y_top = 30
+pan_y_bottom = 140
 pan_y_level = 130
-pan_x_left = 30
-pan_x_right = 170
 
 inactivity_timer = 3  # seconds to Wait before pan/tilt search
 inactivity_cnt = 15   # Number of loops to wait between pan/tilt movement
 
-# Timer seconds to wait before starting pan/tilt search for face.
-pan_search_delay = 15
-
 # OpenCV Settings
 face_haar_path = '/usr/share/opencv/haarcascades/haarcascade_frontalface_default.xml'
 face_timer = 5  # Seconds to stay in face detect mode even if there is motion.
-face_retries = 15    #
+face_retries = 15    # Number of loop cycles to wait without seeing a face before looking for motion
 face_conv = 7.0      # factor to convert face size to distance in inches
 
 # OpenCV Motion Tracking Settings
