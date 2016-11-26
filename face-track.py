@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track.py"
-ver = "version 0.51"
+ver = "version 0.52"
 
 """
 motion-track ver 0.50 is written by Claude Pageau pageauc@gmail.com
@@ -187,16 +187,16 @@ def face_track():
     image1 = image2
     grayimage1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
     still_scanning = True
-    motion_found = False 
-    face_found = False    
     pan_goto(pan_x_start, pan_y_start)   # Position Pan/Tilt to start position
     face_cnt = 0 
     print("Start Motion Tracking ....")    
     while still_scanning:
+        motion_found = False
+        face_found = False         
         start_time, frame_count = show_FPS(start_time, frame_count)    
         image2 = vs.read()        
         grayimage2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
-        if face_cnt < 1:
+        if face_cnt < 1:          
             # Search for Motion and Track
             # Get differences between the two greyed, blurred images    
             differenceimage = cv2.absdiff(grayimage1, grayimage2)
@@ -224,13 +224,13 @@ def face_track():
                     ch = h     
             if motion_found:
                 if debug:
-                    print("face-track - Motion at cx=%3i cy=%3i  total_Contours=%2i  biggest_area:%3ix%3i=%5i" % (cx ,cy, total_contours, cw, ch, biggest_area))
+                    print("face-track - Motion At cx=%3i cy=%3i  total_Contours=%2i  biggest_area:%3ix%3i=%5i" % (cx ,cy, total_contours, cw, ch, biggest_area))
                 Nav_LR = cam_cx - cx
                 Nav_UD = cam_cy - cy
                 pan_cx = pan_cx - Nav_LR /6 
                 pan_cy = pan_cy - Nav_UD /6
                 if debug:            
-                    print("face-track - pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " % (pan_cx, pan_cy, Nav_LR, Nav_UD))                
+                    print("face-track - Pan To pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " % (pan_cx, pan_cy, Nav_LR, Nav_UD))                
                 # pan_goto(pan_cx, pan_cy)
                 pan_goto(pan_cx, pan_cy)
                 inactivity_start = time.time()                 
@@ -272,7 +272,7 @@ def face_track():
                 pan_cx = int(pan_cx - Nav_LR /6) 
                 pan_cy = int(pan_cy - Nav_UD /6)
                 if debug:            
-                    print("face-track - Found at pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " % (pan_cx, pan_cy, Nav_LR, Nav_UD))                    
+                    print("face-track - Face at pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " % (pan_cx, pan_cy, Nav_LR, Nav_UD))                    
                 pan_goto(pan_cx, pan_cy)
                 inactivity_start = time.time()                  
             else:
@@ -288,11 +288,9 @@ def face_track():
                 cv2.imshow('Difference Image',differenceimage) 
             if thresh_window_on:
                 cv2.imshow('OpenCV Threshold', thresholdimage)        
-            if face_found:
-                face_found = False             
+            if face_found:            
                 cv2.rectangle(image2,(x,y),(x+w,y+h),(255,0,0), LINE_THICKNESS)
             if motion_found:
-                motion_found = False
                 cv2.circle(image2,(cx,cy),CIRCLE_SIZE,(0,255,0), LINE_THICKNESS)
                 
             if WINDOW_BIGGER > 1:  # Note setting a bigger window will slow the FPS
