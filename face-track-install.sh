@@ -54,7 +54,7 @@ wget http://www.mindsensors.com/largefiles/pi-pan-2016-Jessie.tar.gz
 echo "Extracting files to /home/pi/pi-pan folder"
 tar -zxvf pi-pan-2016-Jessie.tar.gz
 echo "Download and Install pi-pan python library"
-sudo -y apt-get install python-setuptools
+sudo apt-get install python-setuptools -y
 sudo easy_install pip
 sudo pip install pipan
 cd ~/pi-pan
