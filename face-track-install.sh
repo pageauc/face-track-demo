@@ -55,7 +55,7 @@ echo "Extracting files to /home/pi/pi-pan folder"
 tar -zxvf pi-pan-2016-Jessie.tar.gz
 echo "Download and Install pi-pan python library"
 sudo -y apt-get install python-setuptools
-sudo -y easy_install pip
+sudo easy_install pip
 sudo pip install pipan
 cd ~/pi-pan
 # Check if servod file exists and install
