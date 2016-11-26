@@ -1,6 +1,6 @@
 #!/bin/bash
 # face-track-install.sh script written by Claude Pageau 24-Nov-2016
-ver="1.0"
+ver="1.2"
 APP_DIR='face-track-demo'  # Default folder install location
 
 cd ~

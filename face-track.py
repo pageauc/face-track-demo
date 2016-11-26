@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track.py"
-ver = "version 0.53"
+ver = "version 0.55"
 
 """
 motion-track ver 0.50 is written by Claude Pageau pageauc@gmail.com
@@ -78,9 +78,14 @@ p = pipan.PiPan()  # Initialize pipan driver
 cam_cx = CAMERA_WIDTH / 2
 cam_cy = CAMERA_HEIGHT / 2
 big_w = int(CAMERA_WIDTH * WINDOW_BIGGER)
-big_h = int(CAMERA_HEIGHT * WINDOW_BIGGER) 
+big_h = int(CAMERA_HEIGHT * WINDOW_BIGGER)
 
-#-----------------------------------------------------------------------------------------------  
+# Color data for OpenCV Markings
+blue = (255,0,0)
+green = (0,255,0)
+red = (0,0,255)
+
+#-------------------------------------------------------------------------------------------  
 class PiVideoStream:
     def __init__(self, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=CAMERA_FRAMERATE, rotation=0, hflip=False, vflip=False):
         # initialize the camera and stream
@@ -146,18 +151,19 @@ def show_FPS(start_time,frame_count):
 #-----------------------------------------------------------------------------------------------      
 def pan_goto(x, y):    # Move the pan/tilt to a specific location.
     if x <  pan_x_left:
-        x = pan_x_left + pan_move_x
+        x = pan_x_left
     elif x > pan_x_right:
-        x = pan_x_right - pan_move_x
+        x = pan_x_right
     elif y < pan_y_top:
-        y = pan_y_top + pan_move_y
+        y = pan_y_top
     elif y > pan_y_bottom:
-        y = pan_y_bottom - pan_move_y 
+        y = pan_y_bottom
     p.do_pan(int(x))
     p.do_tilt(int(y))
     if verbose:
         print("pan_goto - moved camera to pan_cx=%3i pan_cy=%3i" % ( x, y))
-    time.sleep(pan_servo_delay)      
+    time.sleep(pan_servo_delay)
+    return x, y    
     
 #-----------------------------------------------------------------------------------------------  
 def face_track():
@@ -173,26 +179,28 @@ def face_track():
         print("press q to quit opencv display")
     else:
         print("press ctrl-c to quit")        
-    cx, cy, cw, ch = 0, 0, 0 , 0
+    cx, cy, cw, ch = 0, 0, 0, 0
+    mx, my, mw, mh = 0, 0, 0, 0
+    fx, fy, fw, fh = 0, 0, 0, 0  
     pan_cx = cam_cx
     pan_cy = cam_cy    
     frame_count = 0
-    inactivity_time = time.time()
+    inactivity_start = time.time()
     loop_cnt = 0
     start_time = time.time()
-    
-    # initialize image1 using image2 (only done first time)
     face_cascade = cv2.CascadeClassifier(face_haar_path)   
+    still_scanning = True
+    pan_cx, pan_cy = pan_goto(pan_x_start, pan_y_start)   # Position Pan/Tilt to start position
     image2 = vs.read()     
     image1 = image2
-    grayimage1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
-    still_scanning = True
-    pan_goto(pan_x_start, pan_y_start)   # Position Pan/Tilt to start position
-    face_cnt = 0 
-    print("Start Motion Tracking ....")    
+    grayimage1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)    
+    face_cnt = 0
+    print("Start Tracking Motion and Faces ....")    
     while still_scanning:
         motion_found = False
-        face_found = False         
+        face_found = False                    
+        Nav_LR = 0
+        Nav_UD = 0                
         start_time, frame_count = show_FPS(start_time, frame_count)    
         image2 = vs.read()        
         grayimage2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
@@ -218,21 +226,24 @@ def face_track():
                     motion_found = True
                     biggest_area = found_area
                     (x, y, w, h) = cv2.boundingRect(c)
-                    cx = x + w/2   # put circle in middle of width
-                    cy = y + h/2   # put circle closer to top
-                    cw = w
-                    ch = h     
+                    mx = x
+                    my = y
+                    mw = w
+                    mh = h
+
             if motion_found:
+                cx = mx + mw/2   
+                cy = my + mh/2   
                 if debug:
-                    print("face-track - Motion At cx=%3i cy=%3i  total_Contours=%2i  biggest_area:%3ix%3i=%5i" % (cx ,cy, total_contours, cw, ch, biggest_area))
-                Nav_LR = cam_cx - cx
-                Nav_UD = cam_cy - cy
-                pan_cx = pan_cx - Nav_LR /6 
-                pan_cy = pan_cy - Nav_UD /6
+                    print("face-track - Motion At cx=%3i cy=%3i  total_Contours=%2i  biggest_area:%3ix%3i=%5i" % (cx ,cy, total_contours, mw, mh, biggest_area))
+                Nav_LR = int((cam_cx - cx) / 7)
+                Nav_UD = int((cam_cy - cy) / 6)
+                pan_cx = pan_cx - Nav_LR 
+                pan_cy = pan_cy - Nav_UD
                 if debug:            
                     print("face-track - Pan To pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " % (pan_cx, pan_cy, Nav_LR, Nav_UD))                
                 # pan_goto(pan_cx, pan_cy)
-                pan_goto(pan_cx, pan_cy)
+                pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
                 inactivity_start = time.time()                 
             elif time.time() - inactivity_start > inactivity_timer:
                 loop_cnt += 1  
@@ -246,8 +257,8 @@ def face_track():
                         if pan_cy > pan_y_top:
                             pan_cy = pan_y_bottom     
                     if debug:
-                        print("face_track - Reposition Pan/Tilt loop_cnt=%i Inactivity_timer=%d  > %s seconds" % (loop_cnt, inactivity_timer, time.time() - inactivity_start))
-                    pan_goto (pan_cx, pan_cy)
+                        print("face_track - Reposition Pan/Tilt loop_cnt=%i Inactivity_timer=%i  > %.1f seconds" % (loop_cnt, inactivity_timer, time.time() - inactivity_start))
+                    pan_cx, pan_cy = pan_goto (pan_cx, pan_cy)
             else:
                 face_cnt += 1     
         else:
@@ -257,31 +268,31 @@ def face_track():
             biggest_face = 0                
             faces = face_cascade.detectMultiScale(grayimage2, 1.2, 1)
             for (x, y, w, h) in faces:
-                if h > biggest_face:
-                    biggest_face = h                
+                if h > biggest_face:        
                     face_found = True
-                    cx = int(x + w/2)   
-                    cy = int(y + h/2)   
-                    cw = w
-                    ch = h                    
-       
+                    fx = x
+                    fy = y
+                    fw = w
+                    fh = h                     
+                    biggest_face = fh    
+ 
             if face_found:
                 face_cnt = 1
-                Nav_LR = cam_cx - cx
-                Nav_UD = cam_cy - cy
-                pan_cx = int(pan_cx - Nav_LR /6) 
-                pan_cy = int(pan_cy - Nav_UD /6)
+                cx = fx + fw/2   
+                cy = fy + fh/2                 
+                Nav_LR = int((cam_cx - cx) /7 )
+                Nav_UD = int((cam_cy - cy) /6 )
+                pan_cx = pan_cx - Nav_LR 
+                pan_cy = pan_cy - Nav_UD
                 if debug:            
-                    print("face-track - Face at pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " % (pan_cx, pan_cy, Nav_LR, Nav_UD))                    
-                pan_goto(pan_cx, pan_cy)
+                    print("face-track - Found Face at pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i "
+                                                     % (pan_cx, pan_cy, Nav_LR, Nav_UD))                    
+                pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
                 inactivity_start = time.time()                  
             else:
                 face_cnt += 1  # increment face counter             
                 if face_cnt > face_retries:
                     face_cnt = 0                                            
-                    
-        Nav_LR = 0
-        Nav_UD = 0        
                 
         if window_on:
             if diff_window_on:
@@ -289,9 +300,9 @@ def face_track():
             if thresh_window_on:
                 cv2.imshow('OpenCV Threshold', thresholdimage)        
             if face_found:            
-                cv2.rectangle(image2,(x,y),(x+w,y+h),(255,0,0), LINE_THICKNESS)
+                cv2.rectangle(image2,(fx,fy), (fx+fw,fy+fh), blue, LINE_THICKNESS)
             if motion_found:
-                cv2.circle(image2,(cx,cy),CIRCLE_SIZE,(0,255,0), LINE_THICKNESS)
+                cv2.circle(image2, (cx,cy), CIRCLE_SIZE, green, LINE_THICKNESS)
                 
             if WINDOW_BIGGER > 1:  # Note setting a bigger window will slow the FPS
                 image2 = cv2.resize( image2,( big_w, big_h ))                     
