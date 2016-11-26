@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 progname = "face_track.py"
-ver = "version 0.55"
+ver = "version 0.56"
 
 """
-motion-track ver 0.50 is written by Claude Pageau pageauc@gmail.com
+motion-track ver 0.56 is written by Claude Pageau pageauc@gmail.com
 Raspberry (Pi) - python opencv2 motion and face tracking using picamera module
 attached to an openelectrons pan/tilt assembly http://www.mindsensors.com/rpi/33-pi-pan
 
@@ -47,7 +47,7 @@ configFilePath = baseDir + "config.py"
 if not os.path.exists(configFilePath):
     print("ERROR - Missing config.py file - Could not find Configuration file %s" % (configFilePath))
     import urllib2
-    config_url = "https://raw.github.com/pageauc/face-track/master/config.py"
+    config_url = "https://raw.github.com/pageauc/face-track-demo/master/config.py"
     print("   Attempting to Download config.py file from %s" % ( config_url ))
     try:
         wgetfile = urllib2.urlopen(config_url)
