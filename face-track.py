@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track.py"
-ver = "ver 0.61"
+ver = "ver 0.62"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -278,7 +278,6 @@ def face_track():
 
     motion_start = time.time()
     face_start = time.time()
-    inactivity_start = time.time()
     pan_start = time.time()
     
     img_frame = vs.read()
@@ -317,9 +316,9 @@ def face_track():
                                             % (pan_cx, pan_cy, Nav_LR, Nav_UD))                
                 # pan_goto(pan_cx, pan_cy)
                 pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
-                motion_start = time.time()                
-                inactivity_start = time.time()
-            face_start = time.time()
+                motion_start = time.time()
+            else:                
+                face_start = time.time()
         elif check_timer(face_start, timer_face):
             # Search for Face if no motion detected for a specified time period        
             face_data = face_detect(img_frame)
@@ -337,14 +336,14 @@ def face_track():
                                                    % (pan_cx, pan_cy, Nav_LR, Nav_UD))                    
                 pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
                 face_start = time.time()
-            inactivity_start = time.time()
-            pan_start = time.time()            
-        elif check_timer(inactivity_start, timer_inactivity):
-            if check_timer(pan_start, timer_pan):
-                pan_cx, pan_cy = pan_search(pan_cx, pan_cy)
-                pan_cx, pan_cy = pan_goto (pan_cx, pan_cy)              
             else:
                 pan_start = time.time()            
+        elif check_timer(pan_start, timer_pan):
+            pan_cx, pan_cy = pan_search(pan_cx, pan_cy)
+            pan_cx, pan_cy = pan_goto (pan_cx, pan_cy)
+            img_frame = vs.read() 
+            grayimage1 = cv2.cvtColor(img_frame, cv2.COLOR_BGR2GRAY)               
+            pan_start = time.time()            
             motion_start = time.time()            
         else:
             motion_start = time.time()
@@ -362,8 +361,8 @@ def face_track():
             
             # Close Window if q pressed while movement status window selected
             if cv2.waitKey(1) & 0xFF == ord('q'):
+                vs.stop()           
                 cv2.destroyAllWindows()
-                vs.stop()
                 print("face_track - End Motion Tracking")
                 still_scanning = False
 

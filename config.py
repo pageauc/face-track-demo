@@ -1,4 +1,4 @@
-# Config.py file for face-track.py ver 0.60
+# Config.py file for face-track.py ver 0.62
 
 # Display Settings
 debug = True        # Set to False for no data display
@@ -39,7 +39,6 @@ pan_move_y = int(CAMERA_HEIGHT / 7) # Amount to pan up/down in search mode
 
 timer_motion = 3      # seconds delay after no motion before looking for face
 timer_face = 3        # seconds delay after no face found before starting pan search
-timer_inactivity = 3  # seconds delay after no face or motion to start pan search
 timer_pan = 2         # seconds delay between pan seach repositioning movements
 
 # OpenCV haarcascade Settings
