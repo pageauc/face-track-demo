@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 progname = "face_track.py"
-ver = "ver 0.60"
+ver = "ver 0.61"
 
 """
-motion-track ver 0.60 is written by Claude Pageau pageauc@gmail.com
+motion-track is written by Claude Pageau pageauc@gmail.com
 Raspberry (Pi) - python opencv2 motion and face tracking using picamera module
 attached to an openelectrons pan/tilt assembly http://www.mindsensors.com/rpi/33-pi-pan
 
@@ -177,7 +177,7 @@ def pan_goto(x, y):    # Move the pan/tilt to a specific location.
     p.do_tilt(int(y))
     time.sleep(pan_servo_delay)  # give the servo's some time to move    
     if verbose:
-        print("pan_goto - moved camera to pan_cx=%3i pan_cy=%3i" % ( x, y))
+        print("pan_goto - Moved Camera to pan_cx=%i pan_cy=%i" % ( x, y ))
     return x, y    
 
 #-----------------------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ def pan_search(pan_cx, pan_cy):
         if pan_cy > pan_max_bottom:
             pan_cy = pan_max_top     
     if debug:            
-        print("pan_search - at pan_cx=%3i pan_cy=%3i "
+        print("pan_search - at pan_cx=%i pan_cy=%i "
                             % (pan_cx, pan_cy))        
     return pan_cx, pan_cy
 
@@ -213,6 +213,8 @@ def motion_detect(gray_img_1, gray_img_2):
                 motion_found = True
         if motion_found:    
             motion_center = (int(mx + mw/2), int(my + mh/2))
+            if verbose:
+                print("motion-detect - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
         else:
             motion_center = ()
     else:
@@ -221,22 +223,35 @@ def motion_detect(gray_img_1, gray_img_2):
  
 #-----------------------------------------------------------------------------------------------
 def face_detect(image):
-    # Look for Front Face
-    ffaces = face_cascade.detectMultiScale(image, 1.2, 1)
+    # Look for Frontal Face
+    ffaces = face_cascade.detectMultiScale(image, 1.2, 1)    
     if ffaces != ():
         for f in ffaces:
             face = f
+        if verbose:
+            print("face_detect - Found Frontal Face using face_cascade")            
     else:
-        ffaces = frontalface.detectMultiScale(image,1.3,4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING + cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT + cv2.cv.CV_HAAR_DO_ROUGH_SEARCH),(60,60))
-        if ffaces != ():			# Check if Frontal Face Found
-            for f in ffaces:		# f in fface is an array with a rectangle representing a face
-                face = f 
+        # Look for Profile Face if Frontal Face Not Found
+        pfaces = profileface.detectMultiScale(image, 1.2, 1)  # This seems to work better than below           
+        # pfaces = profileface.detectMultiScale(image,1.3,4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING 
+        #                                                   + cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT
+        #                                                   + cv2.cv.CV_HAAR_DO_ROUGH_SEARCH),(80,80)) 
+        if pfaces != ():			# Check if Profile Face Found
+            for f in pfaces:		# f in pface is an array with a rectangle representing a face
+                face = f
+            if verbose:
+                print("face_detect - Found Profile Face using profileface")          
+ 
         else:
-            # Look for Profile Face if Frontal Face Not Found
-            pfaces = profileface.detectMultiScale(image,1.3,4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING + cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT + cv2.cv.CV_HAAR_DO_ROUGH_SEARCH),(80,80)) 
-            if pfaces != ():			# Check if Profile Face Found
-                for f in pfaces:		# f in pface is an array with a rectangle representing a face
-                    face = f
+            ffaces = frontalface.detectMultiScale(image, 1.2, 1)  # This seems to work better than below
+            #ffaces = frontalface.detectMultiScale(image,1.3,4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING 
+            #                                                  + cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT 
+            #                                                  + cv2.cv.CV_HAAR_DO_ROUGH_SEARCH),(60,60))    
+            if ffaces != ():			# Check if Frontal Face Found
+                for f in ffaces:		# f in fface is an array with a rectangle representing a face
+                    face = f 
+                if verbose:
+                    print("face_detect - Found Frontal Face using frontalface")            
             else:
                 face = ()                 
     return face
@@ -283,8 +298,6 @@ def face_track():
             fps_start, fps_counter = show_FPS(fps_start, fps_counter)    
         img_frame = vs.read()        
         if check_timer(motion_start, timer_motion): 
-            if verbose:
-                print("face-track - Searching for Motion at (%3i, %3i)" % (pan_cx, pan_cy))       
             # Search for Motion and Track
             grayimage2 = cv2.cvtColor(img_frame, cv2.COLOR_BGR2GRAY)
             motion_center = motion_detect(grayimage1, grayimage2)            
@@ -309,8 +322,6 @@ def face_track():
             face_start = time.time()
         elif check_timer(face_start, timer_face):
             # Search for Face if no motion detected for a specified time period        
-            if verbose:
-                print("face-track - Searching for Face at (%3i, %3i)" % (pan_cx, pan_cy))        
             face_data = face_detect(img_frame)
             if face_data != ():
                 face_found = True
