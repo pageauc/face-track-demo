@@ -1,6 +1,13 @@
-# Raspberry Pi Camera Face and Motion Tracking Demo
-### Using an openelectrons pan/tilt assembly http://www.mindsensors.com/rpi/33-pi-pan
-### and python2 and Opencv to Track x,y position of object in camera view.  
+## Raspberry Pi Camera Face and Motion Tracking Demo
+***Uses python and Opencv to Track x,y position of moving object in camera view***  
+
+***
+can use an openelectrons pan/tilt assembly    
+per http://www.mindsensors.com/rpi/33-pi-pan    
+or   
+gpiozero and pan/tilt servos connected to appropriate RPI gpio pins
+per https://github.com/RPi-Distro/python-gpiozero
+***
 
 ### Quick Install   
 Easy Install of face-track-demo onto a Raspberry Pi Computer with latest Raspbian Jessie (recommended). 
