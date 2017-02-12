@@ -177,12 +177,11 @@ def check_timer(start_time, duration):
  
 #-----------------------------------------------------------------------------------------------      
 def pan_goto(x, y):    # Move the pan/tilt to a specific location.
-    # convert x an y 0 to 180 deg to -45 to + 45 coordinates
+    # convert x and y 0 to 180 deg to -45 to + 45 coordinates
     # required for the gpiozero python servo setup
 
     # check maximum server limits and change if exceeded
-    # These can be less than the maximum permitted
-    
+    # These can be less than the maximum permitted    
     if x <  pan_max_left:
         x = pan_max_left
     elif x > pan_max_right:
@@ -193,22 +192,19 @@ def pan_goto(x, y):    # Move the pan/tilt to a specific location.
     elif y > pan_max_bottom:
         y = pan_max_bottom 
 
-    # move pan servo
+    # convert and move pan servo
     servo_x = int ( x /  2) - 45
     if servo_x > 45:
         servo_x = 45
-
     pan.angle = servo_x
     time.sleep(pan_servo_delay)   # give the servo's some time to move
 
-    # move tilt servo
+    # convert and move tilt servo
     servo_y = int (  y /  2 ) - 45
     if servo_y > 45:
         servo_y = 45
-
     tilt.angle = servo_y
     time.sleep(pan_servo_delay)   # give the servo's some time to move
-
 
     if verbose:
         print("pan_goto - Moved Camera to pan_cx=%i pan_cy=%i" % ( x, y ))
