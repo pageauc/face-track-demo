@@ -13,53 +13,57 @@ for gpiozero servo control
     
     curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install-gpiozero.sh | bash    
     
-From a computer logged into the RPI via ssh(Putty) session use mouse to highlight command above, right click, copy.  
+From a computer logged into the RPI via ssh(Putty) session use mouse to highlight appropriate command above, right click, copy.  
 Then select ssh(Putty) window, mouse right click, paste.  The command should 
-download and execute the github face-track-install.sh script and install the face-track-demo project.  
+download and execute the github script and install the face-track-demo project.  
 This install can also be done directly on an Internet connected Raspberry Pi
 via SSH (Putty), console or gui desktop terminal session and web a browser if you wish to copy the link.       
 Note - a Raspbian sudo apt-get update and upgrade will be performed as part of install 
 so it may take some time if these are not up-to-date.
 
-#### or Manual Install   
+### or Manual Install   
 From logged in RPI SSH session or console terminal perform the following.
 
-for pi-pan openelectrons controller  
+***for pi-pan openelectrons controller***  
 
     wget https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh
     chmod +x face-track-install.sh
     ./face-track-install.sh
-
-for gpiozero servo control  
+   
+***for gpiozero servo control***  
  
     wget https://raw.github.com/pageauc/face-track-demo/master/face-track-install-gpiozero.sh
     chmod +x face-track-install-gpiozero.sh
     ./face-track-install-gpiozero.sh
-   
     
 ### How to Run
-This program requires an openelectrons pan/tilt assembly and servo controller installed
+
+####OpenElectrons
+The face-track-install.sh program will require an openelectrons pan/tilt assembly and servo controller installed
 and tested see http://www.mindsensors.com/rpi/33-pi-pan. See web site for installation details. 
 This program installs and uses servo blaster and the pipan python
 library.  See the face-track-install.sh for details.  Support programs and utilities are installed
 in the /home/pi/pi-pan folder.  These can be used to test the openelectrons pan/tilt operation.
-
-Default is Jessie GUI desktop display. Use Nano to Edit config.py variables. 
-default is window_on=True to display the opencv tracking window on GUI desktop.   
-See other variables and descriptions for additional variable customization settings.
 From SSH session, console or GUI desktop terminal session execute the following commands 
-
-for openelectrons
 
     cd ~/face-track-demo
     ./face-track.py   
 
-for gpiozero
+####gpiozero
+The face-track-install-gpiozero.sh will require pan/tilt servos connected to the appropriate RPI gpio pins per 
+details and documentation links at https://github.com/RPi-Distro/python-gpiozero
+From SSH session, console or GUI desktop terminal session execute the following commands 
 
     cd ~/face-track-demo
     ./face-track-gpiozero.py   
 
-    
+####GUI or SSH display
+Default is Jessie GUI desktop display. Use Nano to Edit config.py variables. 
+default is window_on=True to display the opencv tracking window on GUI desktop.   
+See other variables and descriptions for additional variable customization settings.
+
+The program can be run headless if required by setting config.py variable window_on=False 
+  
 ### Face and Motion Track Demo - Basic concept of tracking moving objects
 This Demo program detects motion and/or faces in the field of view and uses opencv to calculate the 
 largest contour above a minimum size and return its x,y coordinate.  The object is then tracked using
