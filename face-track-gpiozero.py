@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track-gpiozero.py"
-ver = "ver 0.8"
+ver = "ver 0.9"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -85,8 +85,20 @@ tilt_pin = 23   # gpio pin for y AngularServo control below
 # Initialize gpiozero AngularServo settings.  Adjust min_angle and max_angle 
 # settings below for your particular servo setup per 
 # https://github.com/RPi-Distro/python-gpiozero
-pan = AngularServo(pan_pin, min_angle=-42, max_angle=44)
-tilt = AngularServo(tilt_pin, min_angle=-42, max_angle = 44)
+
+min_x = int(pan_max_left/2) - 44
+max_x = int(pan_max_right/2) - 45
+min_y = int(pan_max_top/2) - 44
+max_y = int(pan_max_bottom/2) - 45
+
+if debug:
+    print("Angular Servo Settings for gpiozero")
+    print("-----------------------------------")
+    print("Horiz pan_pin=%i  min_angle=%i max_angle=%i" % ( pan_pin, min_x, max_x ))
+    print("Vert tilt_pin=%i  min_angle=%i max_angle=%i" % ( tilt_pin, min_y, max_y ))
+
+pan = AngularServo(pan_pin, min_angle=min_x, max_angle=max_x)
+tilt = AngularServo(tilt_pin, min_angle=min_y, max_angle=max_y)
 
 # Create Calculated Variables
 cam_cx = CAMERA_WIDTH / 2
@@ -194,19 +206,19 @@ def pan_goto(x, y):    # Move the pan/tilt to a specific location.
 
     # convert and move pan servo
     servo_x = int(x/2) - 45
-    if servo_x > 44:
-        servo_x = 44
-    elif servo_x < -44:
-        servo_x = -44
+    if servo_x > max_x:
+        servo_x = max_x
+    elif servo_x < min_x:
+        servo_x = min_x
     pan.angle = servo_x
     time.sleep(pan_servo_delay)   # give the servo's some time to move
 
     # convert and move tilt servo
     servo_y = int(y/2) - 45
-    if servo_y > 44:
-        servo_y = 44
-    elif servo_y < -44:
-        servo_y = -44        
+    if servo_y > max_y:
+        servo_y = max_y
+    elif servo_y < min_y:
+        servo_y = min_y
     tilt.angle = servo_y
     time.sleep(pan_servo_delay)   # give the servo's some time to move
 
@@ -409,9 +421,13 @@ if __name__ == '__main__':
         face_track()
     finally:
         print("")
-        print("+++++++++++++++++++++++++++++++++++")
-        print("%s %s - Exiting" % (progname, ver))
-        print("+++++++++++++++++++++++++++++++++++")
+        print("++++++++++++++++++++++++++++++++++++++++++++")        
+        print("Closing gpiozero pan_pin=%i and tilt_pin=%i" % ( pan_pin, tilt_pin ))
+        pan.close()
+        tilt.close() 
+        print("")       
+        print("%s %s - User Exited" % (progname, ver))
+        print("++++++++++++++++++++++++++++++++++++++++++++")
         print("")                                
 
 
