@@ -2,8 +2,7 @@
 ***Uses python and Opencv to Track x,y position of moving object in camera view***  
 
 ***
-can use an openelectrons pan/tilt assembly    
-per http://www.mindsensors.com/rpi/33-pi-pan    
+can use an openelectrons pan/tilt assembly per http://www.mindsensors.com/rpi/33-pi-pan    
 or   
 gpiozero and pan/tilt servos connected to appropriate RPI gpio pins
 per https://github.com/RPi-Distro/python-gpiozero
