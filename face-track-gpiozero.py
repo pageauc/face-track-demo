@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track-gpiozero.py"
-ver = "ver 0.6"
+ver = "ver 0.7"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -174,7 +174,7 @@ def check_timer(start_time, duration):
     else:
        stop_timer = True
     return stop_timer
- 
+  
 #-----------------------------------------------------------------------------------------------      
 def pan_goto(x, y):    # Move the pan/tilt to a specific location.
     # convert x and y 0 to 180 deg to -45 to + 45 coordinates
@@ -193,19 +193,19 @@ def pan_goto(x, y):    # Move the pan/tilt to a specific location.
         y = pan_max_bottom 
 
     # convert and move pan servo
-    servo_x = int ( x /  2) - 45
+    servo_x = int(x/2) - 45
     if servo_x > 44:
         servo_x = 44
-    elif servo_x = -44:
+    elif servo_x < -44:
         servo_x = -44
     pan.angle = servo_x
     time.sleep(pan_servo_delay)   # give the servo's some time to move
 
     # convert and move tilt servo
-    servo_y = int (  y /  2 ) - 45
+    servo_y = int(y/2) - 45
     if servo_y > 44:
         servo_y = 44
-    elif servo_y = -44:
+    elif servo_y < -44:
         servo_y = -44        
     tilt.angle = servo_y
     time.sleep(pan_servo_delay)   # give the servo's some time to move
