@@ -194,19 +194,17 @@ def pan_goto(x, y):    # Move the pan/tilt to a specific location.
         y = pan_max_bottom 
 
     # move pan servo
-    if x > 90:
-        servo_x = int ( x /  2) - 45
-        if servo_x > 45:
-            servo_x = 45
+    servo_x = int ( x /  2) - 45
+    if servo_x > 45:
+        servo_x = 45
 
     pan.angle = servo_x
     time.sleep(pan_servo_delay)   # give the servo's some time to move
 
     # move tilt servo
-    if y > 90:
-        servo_y = int (  y /  2 ) - 45
-        if servo_y > 45:
-            servo_y = 45
+    servo_y = int (  y /  2 ) - 45
+    if servo_y > 45:
+        servo_y = 45
 
     tilt.angle = servo_y
     time.sleep(pan_servo_delay)   # give the servo's some time to move
