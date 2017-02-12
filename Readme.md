@@ -5,8 +5,14 @@
 ### Quick Install   
 Easy Install of face-track-demo onto a Raspberry Pi Computer with latest Raspbian Jessie (recommended). 
 
+for pi-pan openelectrons controller   
+
     curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh | bash
 
+for gpiozero servo control
+    
+    curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install-gpiozero.sh | bash    
+    
 From a computer logged into the RPI via ssh(Putty) session use mouse to highlight command above, right click, copy.  
 Then select ssh(Putty) window, mouse right click, paste.  The command should 
 download and execute the github face-track-install.sh script and install the face-track-demo project.  
@@ -18,10 +24,19 @@ so it may take some time if these are not up-to-date.
 #### or Manual Install   
 From logged in RPI SSH session or console terminal perform the following.
 
+for pi-pan openelectrons controller  
+
     wget https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh
     chmod +x face-track-install.sh
     ./face-track-install.sh
 
+for gpiozero servo control  
+ 
+    wget https://raw.github.com/pageauc/face-track-demo/master/face-track-install-gpiozero.sh
+    chmod +x face-track-install-gpiozero.sh
+    ./face-track-install-gpiozero.sh
+   
+    
 ### How to Run
 This program requires an openelectrons pan/tilt assembly and servo controller installed
 and tested see http://www.mindsensors.com/rpi/33-pi-pan. See web site for installation details. 
@@ -34,8 +49,16 @@ default is window_on=True to display the opencv tracking window on GUI desktop.
 See other variables and descriptions for additional variable customization settings.
 From SSH session, console or GUI desktop terminal session execute the following commands 
 
+for openelectrons
+
     cd ~/face-track-demo
     ./face-track.py   
+
+for gpiozero
+
+    cd ~/face-track-demo
+    ./face-track-gpiozero.py   
+
     
 ### Face and Motion Track Demo - Basic concept of tracking moving objects
 This Demo program detects motion and/or faces in the field of view and uses opencv to calculate the 
