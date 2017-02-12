@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track-gpiozero.py"
-ver = "ver 0.7"
+ver = "ver 0.8"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -233,11 +233,14 @@ def motion_detect(gray_img_1, gray_img_2):
     biggest_area = MIN_AREA      
     # Process images to see if there is motion    
     differenceimage = cv2.absdiff(gray_img_1, gray_img_2)
-    differenceimage = cv2.blur(differenceimage,(BLUR_SIZE,BLUR_SIZE))
+    differenceimage = cv2.blur(differenceimage, (BLUR_SIZE,BLUR_SIZE))
     # Get threshold of difference image based on THRESHOLD_SENSITIVITY variable
-    retval, thresholdimage = cv2.threshold(differenceimage,THRESHOLD_SENSITIVITY,255,cv2.THRESH_BINARY)
-    # Get all the contours found in the thresholdimage
-    contours, hierarchy = cv2.findContours(thresholdimage,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    retval, thresholdimage = cv2.threshold(differenceimage, THRESHOLD_SENSITIVITY, 255, cv2.THRESH_BINARY)
+    # Get all the contours found in the thresholdimage      
+    try:
+        thresholdimage, contours, hierarchy = cv2.findContours( thresholdimage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE )        
+    except:       
+        contours, hierarchy = cv2.findContours( thresholdimage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE )         
     if contours != ():    # Check if Motion Found
         for c in contours:   
             found_area = cv2.contourArea(c) # Get area of current contour   
