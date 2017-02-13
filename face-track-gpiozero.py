@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track-gpiozero.py"
-ver = "ver 0.91"
+ver = "ver 0.92"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -86,8 +86,8 @@ tilt_pin = 23   # gpio pin for y AngularServo control below
 # settings below for your particular servo setup per 
 # https://github.com/RPi-Distro/python-gpiozero
 
-mid_x = pan_max_right/2
-mid_y = pan_max_bottom/2
+mid_x = (pan_max_right - pan_max_left)/2
+mid_y = (pan_max_bottom - pan_max_top)/2
 
 min_x = pan_max_left - mid_x 
 max_x = pan_max_right - mid_x
