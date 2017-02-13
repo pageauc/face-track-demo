@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track-gpiozero.py"
-ver = "ver 0.9"
+ver = "ver 0.91"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -86,10 +86,13 @@ tilt_pin = 23   # gpio pin for y AngularServo control below
 # settings below for your particular servo setup per 
 # https://github.com/RPi-Distro/python-gpiozero
 
-min_x = int(pan_max_left/2) - 44
-max_x = int(pan_max_right/2) - 45
-min_y = int(pan_max_top/2) - 44
-max_y = int(pan_max_bottom/2) - 45
+mid_x = pan_max_right/2
+mid_y = pan_max_bottom/2
+
+min_x = pan_max_left - mid_x 
+max_x = pan_max_right - mid_x
+min_y = pan_max_top - mid_y
+max_y = pan_max_bottom - mid_y
 
 if debug:
     print("Angular Servo Settings for gpiozero")
@@ -205,7 +208,7 @@ def pan_goto(x, y):    # Move the pan/tilt to a specific location.
         y = pan_max_bottom 
 
     # convert and move pan servo
-    servo_x = int(x/2) - 45
+    servo_x = x - mid_x
     if servo_x > max_x:
         servo_x = max_x
     elif servo_x < min_x:
@@ -214,7 +217,7 @@ def pan_goto(x, y):    # Move the pan/tilt to a specific location.
     time.sleep(pan_servo_delay)   # give the servo's some time to move
 
     # convert and move tilt servo
-    servo_y = int(y/2) - 45
+    servo_y = y - mid_y
     if servo_y > max_y:
         servo_y = max_y
     elif servo_y < min_y:
