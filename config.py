@@ -17,7 +17,7 @@ WINDOW_BIGGER = 1   # Resize multiplier for OpenCV Status Window
 CAMERA_WIDTH = 320
 CAMERA_HEIGHT = 240     
 CAMERA_HFLIP = False
-CAMERA_VFLIP = True
+CAMERA_VFLIP = False
 CAMERA_ROTATION= 0
 CAMERA_FRAMERATE = 20
 
@@ -32,12 +32,12 @@ pan_start_y = 130  # initial y start position
 # Bounds checking for pan/tilt Movements.
 pan_max_left = 1
 pan_max_right = 179
-pan_max_top = 40
+pan_max_top = 20
 pan_max_bottom = 160
-pan_move_x = int(CAMERA_WIDTH / 7)  # Amount to pan left/right in search mode
-pan_move_y = int(CAMERA_HEIGHT / 7) # Amount to pan up/down in search mode
+pan_move_x = int( CAMERA_WIDTH / 6 )  # Amount to pan left/right in search mode
+pan_move_y = int( CAMERA_HEIGHT / 8 ) # Amount to pan up/down in search mode
 
-timer_motion = 3      # seconds delay after no motion before looking for face
+timer_motion = 1      # seconds delay after no motion before looking for face
 timer_face = 3        # seconds delay after no face found before starting pan search
 timer_pan = 2         # seconds delay between pan seach repositioning movements
 

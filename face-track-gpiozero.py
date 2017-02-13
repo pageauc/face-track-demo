@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track-gpiozero.py"
-ver = "ver 0.92"
+ver = "ver 0.93"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -409,7 +409,7 @@ def face_track():
             if WINDOW_BIGGER > 1:  # Note setting a bigger window will slow the FPS
                 img_frame = cv2.resize( img_frame,( big_w, big_h ))
                 
-            cv2.imshow('Track (Press q in Window to Quit)', img_frame)
+            cv2.imshow('Track q quits', img_frame)
             
             # Close Window if q pressed while movement status window selected
             if cv2.waitKey(1) & 0xFF == ord('q'):
