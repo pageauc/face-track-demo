@@ -19,7 +19,7 @@ CAMERA_HEIGHT = 240
 CAMERA_HFLIP = False
 CAMERA_VFLIP = True
 CAMERA_ROTATION= 0
-CAMERA_FRAMERATE = 35
+CAMERA_FRAMERATE = 20
 
 # FPS counter
 FRAME_COUNTER = 1000  # Used for display of FPS (frames/second)
@@ -32,7 +32,7 @@ pan_start_y = 130  # initial y start position
 # Bounds checking for pan/tilt Movements.
 pan_max_left = 1
 pan_max_right = 179
-pan_max_top = 20
+pan_max_top = 40
 pan_max_bottom = 160
 pan_move_x = int(CAMERA_WIDTH / 7)  # Amount to pan left/right in search mode
 pan_move_y = int(CAMERA_HEIGHT / 7) # Amount to pan up/down in search mode
