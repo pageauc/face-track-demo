@@ -1,6 +1,6 @@
 #!/bin/bash
 # face-track-install.sh script written by Claude Pageau 24-Nov-2016
-ver="1.2"
+ver="1.3"
 APP_DIR='face-track-demo'  # Default folder install location
 
 cd ~
@@ -48,11 +48,10 @@ echo "------------------------------------------------"
 echo ""
 echo "3 - Install pi-pan files to /home/pi/pi-pan"
 cd ~
-rm pi-pan-2016-Jessie.tar.gz 
-echo "Downloading http://www.mindsensors.com/largefiles/pi-pan-2016-Jessie.tar.gz"
-wget http://www.mindsensors.com/largefiles/pi-pan-2016-Jessie.tar.gz
+echo "Downloading http://www.mindsensors.com/largefiles/pi-pan-2017-Stretch.tar.gz"
+wget -O pi-pan-2017-Stretch.tar.gz http://www.mindsensors.com/largefiles/pi-pan-2017-Stretch.tar.gz
 echo "Extracting files to /home/pi/pi-pan folder"
-tar -zxvf pi-pan-2016-Jessie.tar.gz
+tar -zxvf pi-pan-2017-Stretch.tar.gz
 echo "Download and Install pi-pan python library"
 sudo apt-get install python-setuptools -y
 sudo easy_install pip
