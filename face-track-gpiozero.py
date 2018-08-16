@@ -358,7 +358,7 @@ def face_track():
         print("press ctrl-c to quit SSH or terminal session")
 
     # Setup video stream on a processor Thread for faster speed
-    if WEBCAM
+    if WEBCAM:
         vs = WebcamVideoStream().start()
         vs.CAM_SRC = WEBCAM_SRC
         vs.CAM_WIDTH = WEBCAM_WIDTH
