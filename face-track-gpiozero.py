@@ -378,6 +378,7 @@ def face_track():
     fps_counter = 0
     fps_start = time.time()
 
+    # Initialize Timers for motion, face detect and pan/tilt search
     motion_start = time.time()
     face_start = time.time()
     pan_start = time.time()
@@ -394,7 +395,7 @@ def face_track():
     pan_cx, pan_cy = pan_goto(pan_start_x, pan_start_y)   # Position Pan/Tilt to start position
     grayimage1 = cv2.cvtColor(img_frame, cv2.COLOR_BGR2GRAY)
     print("===================================")
-    print("Start Tracking Motion and Faces....")
+    print("Start Tracking Motion, Look for Faces when motion stops ....")
     print("")
     still_scanning = True
     while still_scanning:
@@ -412,8 +413,7 @@ def face_track():
                 img_frame = cv2.flip(img_frame, 1)
             elif WEBCAM_VFLIP:
                 img_frame = cv2.flip(img_frame, 0)
-        if check_timer(motion_start, timer_motion):
-            # Search for Motion and Track
+        if check_timer(motion_start, timer_motion):  # Search for Motion and Track
             grayimage2 = cv2.cvtColor(img_frame, cv2.COLOR_BGR2GRAY)
             motion_center = motion_detect(grayimage1, grayimage2)
             grayimage1 = grayimage2  # Reset grayimage1 for next loop
@@ -428,8 +428,8 @@ def face_track():
                 pan_cx = pan_cx - Nav_LR
                 pan_cy = pan_cy - Nav_UD
                 if debug:
-                    print("face-track - Pan To pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i "
-                                            % (pan_cx, pan_cy, Nav_LR, Nav_UD))
+                    print("face-track - Pan To pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " %
+                          (pan_cx, pan_cy, Nav_LR, Nav_UD))
                 # pan_goto(pan_cx, pan_cy)
                 pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
                 motion_start = time.time()
@@ -448,8 +448,8 @@ def face_track():
                 pan_cx = pan_cx - Nav_LR
                 pan_cy = pan_cy - Nav_UD
                 if debug:
-                    print("face-track - Found Face at pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i "
-                                                   % (pan_cx, pan_cy, Nav_LR, Nav_UD))
+                    print("face-track - Found Face at pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " %
+                          (pan_cx, pan_cy, Nav_LR, Nav_UD))
                 pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
                 face_start = time.time()
             else:
@@ -493,16 +493,15 @@ def face_track():
 if __name__ == '__main__':
     try:
         face_track()
-    finally:
+    except KeyboardInterrupt:
         print("")
-        print("++++++++++++++++++++++++++++++++++++++++++++")
-        print("Closing gpiozero pan_pin=%i and tilt_pin=%i" % ( pan_pin, tilt_pin ))
+        print("User Pressed Keyboard ctrl-c")
+    finally:
+        print("Closing gpiozero pan_pin=%i and tilt_pin=%i" % (pan_pin, tilt_pin))
         pan.close()
         tilt.close()
         print("")
-        print("%s %s - User Exited" % (progname, ver))
-        print("++++++++++++++++++++++++++++++++++++++++++++")
-        print("")
+        print("%s %s Exiting Program" % (progName, progVer))
 
 
 
