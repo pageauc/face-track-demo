@@ -1,4 +1,4 @@
-# Config.py file for face-track.py ver 0.62
+# Config.py file for face-track.py ver 0.94
 
 # Display Settings
 debug = True        # Set to False for no data display
@@ -12,6 +12,17 @@ LINE_THICKNESS = 2  # thickness of bounding line in pixels
 WINDOW_BIGGER = 1   # Resize multiplier for OpenCV Status Window
                     # if window_on=True then makes opencv window bigger
                     # Note if the window is larger than 1 then a reduced frame rate will occur
+
+# Camera Settings
+# ---------------
+WEBCAM = False         # Default = False False=PiCamera True=USB WebCamera
+
+# Web Camera Settings
+WEBCAM_SRC = 0         # Default= 0   USB opencv connection number
+WEBCAM_WIDTH = 640     # Default= 320 USB Webcam Image width
+WEBCAM_HEIGHT = 480    # Default= 240 USB Webcam Image height
+WEBCAM_HFLIP = True    # Default= False USB Webcam flip image horizontally
+WEBCAM_VFLIP = False   # Default= False USB Webcam flip image vertically
 
 # Camera Settings
 CAMERA_WIDTH = 640
