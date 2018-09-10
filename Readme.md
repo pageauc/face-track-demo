@@ -7,11 +7,11 @@ gpiozero and pan/tilt servos connected to appropriate RPI gpio pins
 per https://github.com/RPi-Distro/python-gpiozero
 
 ### Quick Install   
-Easy Install of face-track-demo onto a Raspberry Pi Computer with latest Raspbian Jessie (recommended). 
+Easy Install of face-track-demo onto a Raspberry Pi Computer with latest Raspbian Stretch (recommended). 
 
 ***for pi-pan openelectrons controller***   
 
-    curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh | bash
+    curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install-pipan.sh | bash
 
 ***for gpiozero servo control***
     
@@ -30,9 +30,9 @@ From logged in RPI SSH session or console terminal perform the following.
 
 ***for pi-pan openelectrons controller***  
 
-    wget https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh
-    chmod +x face-track-install.sh
-    ./face-track-install.sh
+    wget https://raw.github.com/pageauc/face-track-demo/master/face-track-install-pipan.sh
+    chmod +x face-track-install-pipan.sh
+    ./face-track-install-pipan.sh
    
 ***for gpiozero servo control***  
  
@@ -46,12 +46,12 @@ From logged in RPI SSH session or console terminal perform the following.
 The face-track-install.sh program will require an openelectrons pan/tilt assembly and servo controller installed
 and tested see http://www.mindsensors.com/rpi/33-pi-pan. See web site for installation details. 
 This program installs and uses servo blaster and the pipan python
-library.  See the face-track-install.sh for details.  Support programs and utilities are installed
+library.  See the face-track-install-pipan.sh for details.  Support programs and utilities are installed
 in the /home/pi/pi-pan folder.  These can be used to test the openelectrons pan/tilt operation.
 From SSH session, console or GUI desktop terminal session execute the following commands 
 
     cd ~/face-track-demo
-    ./face-track.py   
+    ./face-track-pipan.py   
 
 #### gpiozero
 The face-track-install-gpiozero.sh will require pan/tilt servos connected to the appropriate RPI gpio pins per 

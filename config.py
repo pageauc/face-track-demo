@@ -13,6 +13,10 @@ WINDOW_BIGGER = 1   # Resize multiplier for OpenCV Status Window
                     # if window_on=True then makes opencv window bigger
                     # Note if the window is larger than 1 then a reduced frame rate will occur
 
+GPIOZERO_ON = True  # False = use pipan servo driver, True = gpiozero pan/tilt servo driver
+GPIOZERO_PAN_PIN = 17
+GPIOZERO_TILT_PIN = 23
+                   
 # Camera Settings
 # ---------------
 WEBCAM = False         # Default = False False=PiCamera True=USB WebCamera
@@ -36,17 +40,22 @@ CAMERA_FRAMERATE = 15
 FRAME_COUNTER = 1000  # Used for display of FPS (frames/second)
 
 # Pan Tilt Settings
-pan_servo_delay = 0.4
+pan_servo_delay = 0.2
+servo_max_x_deg = 180
+servo_max_y_deg = 180
+servo_home_xy = (90, 120)
+
 pan_start_x = 90   # Initial x start position
 pan_start_y = 120  # initial y start position
 
 # Bounds checking for pan/tilt Movements.
+
 pan_max_left = 20
 pan_max_right = 160
 pan_max_top = 30
 pan_max_bottom = 140
-pan_move_x = int( CAMERA_WIDTH / 6 )  # Amount to pan left/right in search mode
-pan_move_y = int( CAMERA_HEIGHT / 8 ) # Amount to pan up/down in search mode
+pan_move_x = int(CAMERA_WIDTH / 6)  # Amount to pan left/right in search mode
+pan_move_y = int(CAMERA_HEIGHT / 8) # Amount to pan up/down in search mode
 
 timer_motion = 3      # seconds delay after no motion before looking for face
 timer_face = 2        # seconds delay after no face found before starting pan search

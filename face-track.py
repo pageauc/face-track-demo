@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+progname = "face_track-gpiozero.py"
+ver = "ver 0.94"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -18,12 +20,16 @@ Here is a my YouTube video demonstrating a similar motion tracking only
 program using a Raspberry Pi B2 https://youtu.be/09JS7twPBsQ.  face-track
 is based on the motion-track code
 
-Requires a Raspberry Pi with a RPI camera module installed and configured
-. Cut and paste command below into a terminal sesssion to
+Requires a Raspberry Pi with a RPI camera module installed and configured.
+Cut and paste command below into a terminal sesssion to
 download and install face_track demo.  Program will be installed to
 ~/face-track-demo folder and pan/tilt support files in ~/pi-pan.
 
-curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install.sh | bash
+curl -L https://raw.github.com/pageauc/face-track-demo/master/face-track-install-gpiozero.sh | bash
+
+This demo uses the gpiozero library for controlling servos directly from the
+raspberry pi gpio pins.  You must setup the servos per the install instructions at
+https://github.com/RPi-Distro/python-gpiozero
 
 To Run Demo (Note a reboot may be required depending on the number of updates.
 
@@ -31,50 +37,85 @@ cd ~/face-track-demo
 ./face-track.py
 
 """
-import os
-PROG_NAME = os.path.basename(__file__)
-PROG_VER = "ver 0.64"
 print("===================================")
-print("%s %s using python2 and OpenCV2" % (PROG_NAME, PROG_VER))
+print("%s %s using python2 and OpenCV2" % (progname, ver))
 print("Loading Libraries  Please Wait ....")
-# import the necessary python libraries
-import io
-import time
-from threading import Thread
-import cv2
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import pipan
 
-# Find the full path of this python script
-SCRIPT_PATH = os.path.abspath(__file__)
-# get the path location only (excluding script name)
-SCRIPT_DIR = SCRIPT_PATH[0:SCRIPT_PATH.rfind("/")+1]
-baseFileName = SCRIPT_PATH[SCRIPT_PATH.rfind("/")+1:SCRIPT_PATH.rfind(".")]
+import os
+mypath=os.path.abspath(__file__)       # Find the full path of this python script
+baseDir=mypath[0:mypath.rfind("/")+1]  # get the path location only (excluding script name)
+baseFileName=mypath[mypath.rfind("/")+1:mypath.rfind(".")]
+progName = os.path.basename(__file__)
+
 # Read Configuration variables from config.py file
-configFilePath = SCRIPT_DIR + "config.py"
+configFilePath = baseDir + "config.py"
+
 if not os.path.exists(configFilePath):
-    print("ERROR - Missing config.py file - Could not find Configuration file %s"
-          % (configFilePath))
+    print("ERROR - Missing config.py file - Could not find Configuration file %s" % (configFilePath))
     import urllib2
     config_url = "https://raw.github.com/pageauc/face-track-demo/master/config.py"
-    print("   Attempting to Download config.py file from %s" % config_url)
+    print("   Attempting to Download config.py file from %s" % ( config_url ))
     try:
         wgetfile = urllib2.urlopen(config_url)
     except:
         print("ERROR - Download of config.py Failed")
-        print("        Try Rerunning the face-track-install.sh Again.")
-        print("        or")
-        print("        Perform GitHub curl install per Readme.md")
-        print("        and Try Again")
-        print("Exiting %s" % PROG_NAME)
+        print("   Try Rerunning the face-track-install.sh Again.")
+        print("   or")
+        print("   Perform GitHub curl install per Readme.md")
+        print("   and Try Again")
+        print("Exiting %s" % ( progName ))
         quit()
-    f = open('config.py', 'wb')
+    f = open('config.py','wb')
     f.write(wgetfile.read())
     f.close()
 from config import *
 
-p = pipan.PiPan()  # Initialize pipan driver
+# import the necessary python libraries
+import io
+import time
+import cv2
+from threading import Thread
+if not WEBCAM:   # import pi camera libraries if required
+    from picamera.array import PiRGBArray
+    from picamera import PiCamera
+
+if GPIOZERO_ON:
+    pan_pin = GPIOZERO_PAN_PIN    # gpio pin for x AngularServo control below
+    tilt_pin = GPIOZERO_TILT_PIN  # gpio pin for y AngularServo control below
+    try:
+        from gpiozero import AngularServo
+    except ImportError:
+        print("Problem importing gpiozero library")
+        quit()
+    # Initialize gpiozero AngularServo settings.  Adjust min_angle and max_angle
+    # settings below for your particular servo setup per
+    # https://github.com/RPi-Distro/python-gpiozero
+    min_x = pan_max_left - mid_x
+    max_x = pan_max_right - mid_x
+    min_y = pan_max_top - mid_y
+    max_y = pan_max_bottom - mid_y
+    mid_x = (pan_max_right - pan_max_left)/2
+    mid_y = (pan_max_bottom - pan_max_top)/2
+    pan = AngularServo(pan_pin, min_angle=min_x, max_angle=max_x)
+    tilt = AngularServo(tilt_pin, min_angle=min_y, max_angle=max_y)
+    if debug:
+        print("Angular Servo Settings for gpiozero")
+        print("-----------------------------------")
+        print("Horiz pan_pin=%i  min_angle=%i max_angle=%i" %
+              (pan_pin, min_x, max_x))
+        print("Vert tilt_pin=%i  min_angle=%i max_angle=%i" %
+              (tilt_pin, min_y, max_y))
+else
+    try:
+        import pipan
+        p = pipan.PiPan()
+    except ImportError:
+        print("Error importing PiPan servo library")
+        quit()
+
+        
+        
+        
 # Create Calculated Variables
 cam_cx = int(CAMERA_WIDTH/2)
 cam_cy = int(CAMERA_HEIGHT/2)
@@ -87,15 +128,13 @@ frontalface = cv2.CascadeClassifier(fface2_haar_path)
 profileface = cv2.CascadeClassifier(pface1_haar_path)
 
 # Color data for OpenCV Markings
-blue = (255, 0, 0)
-green = (0, 255, 0)
-red = (0, 0, 255)
+blue = (255,0,0)
+green = (0,255,0)
+red = (0,0,255)
 
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------
 class PiVideoStream:
-    def __init__(self, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT),
-                 framerate=CAMERA_FRAMERATE, rotation=0,
-                 hflip=False, vflip=False):
+    def __init__(self, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=CAMERA_FRAMERATE, rotation=0, hflip=False, vflip=False):
         # initialize the camera and stream
         self.camera = PiCamera()
         self.camera.resolution = resolution
@@ -105,11 +144,59 @@ class PiVideoStream:
         self.camera.vflip = vflip
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
         self.stream = self.camera.capture_continuous(self.rawCapture,
-                                                     format="bgr",
-                                                     use_video_port=True)
+            format="bgr", use_video_port=True)
+
         # initialize the frame and the variable used to indicate
         # if the thread should be stopped
         self.frame = None
+        self.stopped = False
+
+    def start(self):
+        # start the thread to read frames from the video stream
+        t = Thread(target=self.update, args=())
+        t.daemon = True
+        t.start()
+        return self
+
+    def update(self):
+        # keep looping infinitely until the thread is stopped
+        for f in self.stream:
+            # grab the frame from the stream and clear the stream in
+            # preparation for the next frame
+            self.frame = f.array
+            self.rawCapture.truncate(0)
+
+            # if the thread indicator variable is set, stop the thread
+            # and resource camera resources
+            if self.stopped:
+                self.stream.close()
+                self.rawCapture.close()
+                self.camera.close()
+                return
+
+    def read(self):
+        # return the frame most recently read
+        return self.frame
+
+    def stop(self):
+        # indicate that the thread should be stopped
+        self.stopped = True
+
+#------------------------------------------------------------------------------
+class WebcamVideoStream:
+    def __init__(self, CAM_SRC=WEBCAM_SRC, CAM_WIDTH=WEBCAM_WIDTH,
+                 CAM_HEIGHT=WEBCAM_HEIGHT):
+        """
+        initialize the video camera stream and read the first frame
+        from the stream
+        """
+        self.stream = CAM_SRC
+        self.stream = cv2.VideoCapture(CAM_SRC)
+        self.stream.set(3, CAM_WIDTH)
+        self.stream.set(4, CAM_HEIGHT)
+        (self.grabbed, self.frame) = self.stream.read()
+        # initialize the variable used to indicate if the thread should
+        # be stopped
         self.stopped = False
 
     def start(self):
@@ -121,18 +208,12 @@ class PiVideoStream:
 
     def update(self):
         """ keep looping infinitely until the thread is stopped """
-        for f in self.stream:
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            self.frame = f.array
-            self.rawCapture.truncate(0)
+        while True:
             # if the thread indicator variable is set, stop the thread
-            # and resource camera resources
             if self.stopped:
-                self.stream.close()
-                self.rawCapture.close()
-                self.camera.close()
                 return
+            # otherwise, read the next frame from the stream
+            (self.grabbed, self.frame) = self.stream.read()
 
     def read(self):
         """ return the frame most recently read """
@@ -142,48 +223,79 @@ class PiVideoStream:
         """ indicate that the thread should be stopped """
         self.stopped = True
 
-#------------------------------------------------------------------------------
-def check_fps(start_time, fps_count):
+#-----------------------------------------------------------------------------------------------
+def show_FPS(start_time, fps_count):
     if debug:
         if fps_count >= FRAME_COUNTER:
             duration = float(time.time() - start_time)
             FPS = float(fps_count / duration)
-            print("check_fps - Processing at %.2f fps last %i frames"
-                  %(FPS, fps_count))
+            print("show_FPS - Processing at %.2f fps last %i frames" %( FPS, fps_count))
             fps_count = 0
             start_time = time.time()
         else:
             fps_count += 1
     return start_time, fps_count
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 def check_timer(start_time, duration):
     if time.time() - start_time > duration:
-        stop_timer = False
+       stop_timer = False
     else:
-        stop_timer = True
+       stop_timer = True
     return stop_timer
 
-#------------------------------------------------------------------------------
-def pan_goto(x, y):
-    """ Move the pan/tilt to a specific location."""
-    if x < pan_max_left:
+#-----------------------------------------------------------------------------------------------
+def pan_goto(x, y):    # Move the pan/tilt to a specific location.
+    # convert x and y 0 to 180 deg to -45 to + 45 coordinates
+    # required for the gpiozero python servo setup
+
+    # check maximum server limits and change if exceeded
+    # These can be less than the maximum permitted
+    if x <  pan_max_left:
         x = pan_max_left
     elif x > pan_max_right:
         x = pan_max_right
-    p.do_pan(int(x))
-    time.sleep(pan_servo_delay)  # give the servo's some time to move
+
     if y < pan_max_top:
         y = pan_max_top
     elif y > pan_max_bottom:
         y = pan_max_bottom
-    p.do_tilt(int(y))
-    time.sleep(pan_servo_delay)  # give the servo's some time to move
+
+    # convert and move pan servo
+    if GPIOZERO_ON:
+        servo_x = x - mid_x
+        if servo_x > max_x:
+            servo_x = max_x
+        elif servo_x < min_x:
+            servo_x = min_x
+        pan.angle = servo_x
+        # give the servo's some time to move
+        time.sleep(pan_servo_delay)
+        servo_y = y - mid_y
+        if servo_y > max_y:
+            servo_y = max_y
+        elif servo_y < min_y:
+            servo_y = min_y
+        tilt.angle = servo_y
+        time.sleep(pan_servo_delay)
+    else:
+        if x < pan_max_left:
+            x = pan_max_left
+        elif x > pan_max_right:
+            x = pan_max_right
+        p.do_pan(int(x))
+        time.sleep(pan_servo_delay)
+        if y < pan_max_top:
+            y = pan_max_top
+        elif y > pan_max_bottom:
+            y = pan_max_bottom
+        p.do_tilt(int(y))
+        time.sleep(pan_servo_delay)
     if verbose:
         print("pan_goto - Moved Camera to pan_cx=%i pan_cy=%i" % (x, y))
     return x, y
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 def pan_search(pan_cx, pan_cy):
     pan_cx = pan_cx + pan_move_x
     if pan_cx > pan_max_right:
@@ -192,31 +304,25 @@ def pan_search(pan_cx, pan_cy):
         if pan_cy > pan_max_bottom:
             pan_cy = pan_max_top
     if debug:
-        print("pan_search - at pan_cx=%i pan_cy=%i"
-              % (pan_cx, pan_cy))
+        print("pan_search - at pan_cx=%i pan_cy=%i" %
+              (pan_cx, pan_cy))
     return pan_cx, pan_cy
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 def motion_detect(gray_img_1, gray_img_2):
     motion_found = False
     biggest_area = MIN_AREA
     # Process images to see if there is motion
     differenceimage = cv2.absdiff(gray_img_1, gray_img_2)
-    differenceimage = cv2.blur(differenceimage, (BLUR_SIZE, BLUR_SIZE))
+    differenceimage = cv2.blur(differenceimage, (BLUR_SIZE,BLUR_SIZE))
     # Get threshold of difference image based on THRESHOLD_SENSITIVITY variable
-    retval, thresholdimage = cv2.threshold(differenceimage,
-                                           THRESHOLD_SENSITIVITY,
-                                           255, cv2.THRESH_BINARY)
+    retval, thresholdimage = cv2.threshold(differenceimage, THRESHOLD_SENSITIVITY, 255, cv2.THRESH_BINARY)
     # Get all the contours found in the thresholdimage
     try:
-        thresholdimage, contours, hierarchy = cv2.findContours(thresholdimage,
-                                                               cv2.RETR_EXTERNAL,
-                                                               cv2.CHAIN_APPROX_SIMPLE)
+        thresholdimage, contours, hierarchy = cv2.findContours( thresholdimage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE )
     except:
-        contours, hierarchy = cv2.findContours(thresholdimage,
-                                               cv2.RETR_EXTERNAL,
-                                               cv2.CHAIN_APPROX_SIMPLE)
-    if contours:    # Check if Motion Found
+        contours, hierarchy = cv2.findContours( thresholdimage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE )
+    if contours != ():    # Check if Motion Found
         for c in contours:
             found_area = cv2.contourArea(c) # Get area of current contour
             if found_area > biggest_area:   # Check if it has the biggest area
@@ -226,16 +332,14 @@ def motion_detect(gray_img_1, gray_img_2):
         if motion_found:
             motion_center = (int(mx + mw/2), int(my + mh/2))
             if verbose:
-                print("motion-detect - Found Motion at px cxy(%i, %i)"
-                      "Area wh %ix%i=%i sq px"
-                      % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
+                print("motion-detect - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
         else:
             motion_center = ()
     else:
         motion_center = ()
     return motion_center
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 def face_detect(image):
     # Look for Frontal Face
     ffaces = face_cascade.detectMultiScale(image, 1.2, 1)
@@ -247,21 +351,22 @@ def face_detect(image):
     else:
         # Look for Profile Face if Frontal Face Not Found
         pfaces = profileface.detectMultiScale(image, 1.2, 1)  # This seems to work better than below
-        # pfaces = profileface.detectMultiScale(image,1.3, 4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING
+        # pfaces = profileface.detectMultiScale(image,1.3,4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING
         #                                                   + cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT
         #                                                   + cv2.cv.CV_HAAR_DO_ROUGH_SEARCH),(80,80))
         if pfaces != ():			# Check if Profile Face Found
-            for f in pfaces:  # f in pface is an array with a rectangle representing a face
+            for f in pfaces:		# f in pface is an array with a rectangle representing a face
                 face = f
             if verbose:
                 print("face_detect - Found Profile Face using profileface")
+
         else:
             ffaces = frontalface.detectMultiScale(image, 1.2, 1)  # This seems to work better than below
             #ffaces = frontalface.detectMultiScale(image,1.3,4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING
             #                                                  + cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT
             #                                                  + cv2.cv.CV_HAAR_DO_ROUGH_SEARCH),(60,60))
-            if ffaces != ():   # Check if Frontal Face Found
-                for f in ffaces:  # f in fface is an array with a rectangle representing a face
+            if ffaces != ():			# Check if Frontal Face Found
+                for f in ffaces:		# f in fface is an array with a rectangle representing a face
                     face = f
                 if verbose:
                     print("face_detect - Found Frontal Face using frontalface")
@@ -269,34 +374,53 @@ def face_detect(image):
                 face = ()
     return face
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 def face_track():
     print("Initializing Pi Camera ....")
-    # Setup video stream on a processor Thread for faster speed
-    vs = PiVideoStream().start()   # Initialize video stream
-    vs.camera.rotation = CAMERA_ROTATION
-    vs.camera.hflip = CAMERA_HFLIP
-    vs.camera.vflip = CAMERA_VFLIP
-    time.sleep(2.0)    # Let camera warm up
     if window_on:
         print("press q to quit opencv window display")
     else:
         print("press ctrl-c to quit SSH or terminal session")
+
+    # Setup video stream on a processor Thread for faster speed
+    if WEBCAM:
+        vs = WebcamVideoStream().start()
+        vs.CAM_SRC = WEBCAM_SRC
+        vs.CAM_WIDTH = WEBCAM_WIDTH
+        vs.CAM_HEIGHT = WEBCAM_HEIGHT
+        print("Reading Stream from Web Camera  Wait ....")
+        time.sleep(5.0)  # Let Webcam warm up  Increase if getting errors
+    else:
+        vs = PiVideoStream().start()   # Initialize video stream
+        vs.camera.rotation = CAMERA_ROTATION
+        vs.camera.hflip = CAMERA_HFLIP
+        vs.camera.vflip = CAMERA_VFLIP
+        print("Reading Stream from Pi Camera  Wait ....")
+        time.sleep(2.0)    # Let camera warm up
+
     pan_cx = cam_cx
     pan_cy = cam_cy
     fps_counter = 0
     fps_start = time.time()
+
+    # Initialize Timers for motion, face detect and pan/tilt search
     motion_start = time.time()
     face_start = time.time()
     pan_start = time.time()
+
     img_frame = vs.read()
+    if WEBCAM:
+        if (WEBCAM_HFLIP and WEBCAM_VFLIP):
+            img_frame = cv2.flip(img_frame, -1)
+        elif WEBCAM_HFLIP:
+            img_frame = cv2.flip(img_frame, 1)
+        elif WEBCAM_VFLIP:
+            img_frame = cv2.flip(img_frame, 0)
     print("Position pan/tilt to (%i, %i)" % (pan_start_x, pan_start_y))
-    time.sleep(0.5)
-    # Position Pan/Tilt to start position
-    pan_cx, pan_cy = pan_goto(pan_start_x, pan_start_y)
+    pan_cx, pan_cy = pan_goto(pan_start_x, pan_start_y)   # Position Pan/Tilt to start position
     grayimage1 = cv2.cvtColor(img_frame, cv2.COLOR_BGR2GRAY)
     print("===================================")
-    print("Start Tracking Motion and Faces....")
+    print("Start Tracking Motion, Look for Faces when motion stops ....")
     print("")
     still_scanning = True
     while still_scanning:
@@ -305,10 +429,16 @@ def face_track():
         Nav_LR = 0
         Nav_UD = 0
         if show_fps:
-            fps_start, fps_counter = check_fps(fps_start, fps_counter)
+            fps_start, fps_counter = show_FPS(fps_start, fps_counter)
         img_frame = vs.read()
-        if check_timer(motion_start, timer_motion):
-            # Search for Motion and Track
+        if WEBCAM:
+            if (WEBCAM_HFLIP and WEBCAM_VFLIP):
+                img_frame = cv2.flip(img_frame, -1)
+            elif WEBCAM_HFLIP:
+                img_frame = cv2.flip(img_frame, 1)
+            elif WEBCAM_VFLIP:
+                img_frame = cv2.flip(img_frame, 0)
+        if check_timer(motion_start, timer_motion):  # Search for Motion and Track
             grayimage2 = cv2.cvtColor(img_frame, cv2.COLOR_BGR2GRAY)
             motion_center = motion_detect(grayimage1, grayimage2)
             grayimage1 = grayimage2  # Reset grayimage1 for next loop
@@ -318,13 +448,13 @@ def face_track():
                 cy = motion_center[1]
                 if debug:
                     print("face-track - Motion At cx=%3i cy=%3i " % (cx, cy))
-                Nav_LR = int((cam_cx - cx)/7)
-                Nav_UD = int((cam_cy - cy)/6)
+                Nav_LR = int((cam_cx - cx) / 7)
+                Nav_UD = int((cam_cy - cy) / 6)
                 pan_cx = pan_cx - Nav_LR
                 pan_cy = pan_cy - Nav_UD
                 if debug:
-                    print("face-track - Pan To pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i "
-                          % (pan_cx, pan_cy, Nav_LR, Nav_UD))
+                    print("face-track - Pan To pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " %
+                          (pan_cx, pan_cy, Nav_LR, Nav_UD))
                 # pan_goto(pan_cx, pan_cy)
                 pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
                 motion_start = time.time()
@@ -338,21 +468,28 @@ def face_track():
                 (fx, fy, fw, fh) = face_data
                 cx = int(fx + fw/2)
                 cy = int(fy + fh/2)
-                Nav_LR = int((cam_cx - cx)/7)
-                Nav_UD = int((cam_cy - cy)/6)
+                Nav_LR = int((cam_cx - cx) /7 )
+                Nav_UD = int((cam_cy - cy) /6 )
                 pan_cx = pan_cx - Nav_LR
                 pan_cy = pan_cy - Nav_UD
                 if debug:
-                    print("face-track - Found Face at pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i "
-                          % (pan_cx, pan_cy, Nav_LR, Nav_UD))
+                    print("face-track - Found Face at pan_cx=%3i pan_cy=%3i Nav_LR=%3i Nav_UD=%3i " %
+                          (pan_cx, pan_cy, Nav_LR, Nav_UD))
                 pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
                 face_start = time.time()
             else:
                 pan_start = time.time()
         elif check_timer(pan_start, timer_pan):
             pan_cx, pan_cy = pan_search(pan_cx, pan_cy)
-            pan_cx, pan_cy = pan_goto(pan_cx, pan_cy)
+            pan_cx, pan_cy = pan_goto (pan_cx, pan_cy)
             img_frame = vs.read()
+            if WEBCAM:
+                if (WEBCAM_HFLIP and WEBCAM_VFLIP):
+                    img_frame = cv2.flip(img_frame, -1)
+                elif WEBCAM_HFLIP:
+                    img_frame = cv2.flip(img_frame, 1)
+                elif WEBCAM_VFLIP:
+                    img_frame = cv2.flip(img_frame, 0)
             grayimage1 = cv2.cvtColor(img_frame, cv2.COLOR_BGR2GRAY)
             pan_start = time.time()
             motion_start = time.time()
@@ -361,15 +498,15 @@ def face_track():
 
         if window_on:
             if face_found:
-                cv2.rectangle(img_frame, (fx, fy), (fx+fw, fy+fh),
-                              blue, LINE_THICKNESS)
+                cv2.rectangle(img_frame,(fx,fy), (fx+fw,fy+fh), blue, LINE_THICKNESS)
             if motion_found:
-                cv2.circle(img_frame, (cx, cy), CIRCLE_SIZE,
-                           green, LINE_THICKNESS)
-            # Note setting a bigger window will slow the FPS
-            if WINDOW_BIGGER > 1:
-                img_frame = cv2.resize(img_frame, (big_w, big_h))
-            cv2.imshow('Track (Press q in Window to Quit)', img_frame)
+                cv2.circle(img_frame, (cx,cy), CIRCLE_SIZE, green, LINE_THICKNESS)
+
+            if WINDOW_BIGGER > 1:  # Note setting a bigger window will slow the FPS
+                img_frame = cv2.resize( img_frame,( big_w, big_h ))
+
+            cv2.imshow('Track q quits', img_frame)
+
             # Close Window if q pressed while movement status window selected
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 vs.stop()
@@ -377,11 +514,19 @@ def face_track():
                 print("face_track - End Motion Tracking")
                 still_scanning = False
 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     try:
         face_track()
     except KeyboardInterrupt:
         print("")
-        print("User pressed Keyboard ctrl-c")
-        print("%s %s - Exiting" % (PROG_NAME, PROG_VER))
+        print("User Pressed Keyboard ctrl-c")
+    finally:
+        print("Closing gpiozero pan_pin=%i and tilt_pin=%i" % (pan_pin, tilt_pin))
+        pan.close()
+        tilt.close()
+        print("")
+        print("%s %s Exiting Program" % (progName, progVer))
+
+
+

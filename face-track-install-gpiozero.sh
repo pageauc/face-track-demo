@@ -1,6 +1,6 @@
 #!/bin/bash
 # face-track-install-gpiozero.sh script written by Claude Pageau 24-Nov-2016
-ver="0.5"
+ver="0.6"
 APP_DIR='face-track-demo'  # Default folder install location
 
 cd ~
@@ -26,14 +26,12 @@ echo "  Face and Motion Tracking Pan/Tilt Camera Demo"
 echo "------------------------------------------------"
 echo ""
 echo "1 - Downloading GitHub Repo files to $INSTALL_PATH"
-wget -O face-track-install-gpiozero.sh -q --show-progress https://raw.github.com/pageauc/face-track-demo/master/face-track-install-gpiozero.sh
+wget -O face-track-gpiozero.py -q --show-progress https://raw.github.com/pageauc/face-track-demo/master/face-track-gpiozero.py
 if [ $? -ne 0 ] ;  then
-  wget -O face-track-install-gpiozero.sh https://raw.github.com/pageauc/face-track-demo/master/face-track-install-gpiozero.sh
   wget -O face-track-gpiozero.py https://raw.github.com/pageauc/face-track-demo/master/face-track-gpiozero.py 
   wget -O config.py https://raw.github.com/pageauc/face-track-demo/master/config.py  
   wget -O Readme.md https://raw.github.com/pageauc/face-track-demo/master/Readme.md  
 else
-  wget -O face-track-gpiozero.py -q --show-progress https://raw.github.com/pageauc/face-track-demo/master/face-track-gpiozero.py
   wget -O config.py -q --show-progress https://raw.github.com/pageauc/face-track-demo/master/config.py    
   wget -O Readme.md -q --show-progress  https://raw.github.com/pageauc/face-track-demo/master/Readme.md  
 fi
@@ -42,7 +40,6 @@ echo "------------------------------------------------"
 echo ""
 echo "2 - Make required Files Executable"
 chmod +x face-track-gpiozero.py
-chmod +x face-track-install-gpiozero.sh
 echo "Done Permissions"
 echo "------------------------------------------------"
 echo ""
@@ -70,7 +67,9 @@ fi
 echo "------------------------------------------------"
 echo ""
 echo "3 - Installing OpenCV and python-picamera Libraries"
-sudo apt-get install -y python-picamera python-imaging python-pyexiv2 libgl1-mesa-dri
+sudo apt-get install -y python-picamera python3-picamera 
+sudo apt-get install -y python-imaging python3-pil
+sudo apt-get install -y python-pyexiv2 libgl1-mesa-dri
 sudo apt-get install -y python-gpiozero
 sudo apt-get install -y libopencv-dev python-opencv
 sudo apt-get install -y fonts-freefont-ttf # Required for Jessie Lite Only

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 progname = "face_track-gpiozero.py"
-ver = "ver 0.94"
+ver = "ver 0.95"
 
 """
 motion-track is written by Claude Pageau pageauc@gmail.com
@@ -79,8 +79,8 @@ from picamera import PiCamera
 from threading import Thread
 from gpiozero import AngularServo
 
-pan_pin = 17    # gpio pin for x AngularServo control below
-tilt_pin = 23   # gpio pin for y AngularServo control below
+pan_pin = GPIOZERO_PAN_PIN    # gpio pin for x AngularServo control below
+tilt_pin = GPIOZERO_TILT_PIN  # gpio pin for y AngularServo control below
 
 # Initialize gpiozero AngularServo settings.  Adjust min_angle and max_angle
 # settings below for your particular servo setup per
