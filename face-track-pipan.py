@@ -238,7 +238,7 @@ def motion_detect(gray_img_1, gray_img_2):
 #------------------------------------------------------------------------------
 def face_detect(image):
     # Look for Frontal Face
-    ffaces = face_cascade.detectMultiScale(image, 1.2, 1)
+    ffaces = face_cascade.detectMultiScale(image, 1.4, 1)
     if ffaces != ():
         for f in ffaces:
             face = f
@@ -246,7 +246,7 @@ def face_detect(image):
             print("face_detect - Found Frontal Face using face_cascade")
     else:
         # Look for Profile Face if Frontal Face Not Found
-        pfaces = profileface.detectMultiScale(image, 1.2, 1)  # This seems to work better than below
+        pfaces = profileface.detectMultiScale(image, 1.4, 1)  # This seems to work better than below
         # pfaces = profileface.detectMultiScale(image,1.3, 4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING
         #                                                   + cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT
         #                                                   + cv2.cv.CV_HAAR_DO_ROUGH_SEARCH),(80,80))
@@ -256,7 +256,7 @@ def face_detect(image):
             if verbose:
                 print("face_detect - Found Profile Face using profileface")
         else:
-            ffaces = frontalface.detectMultiScale(image, 1.2, 1)  # This seems to work better than below
+            ffaces = frontalface.detectMultiScale(image, 1.4, 1)  # This seems to work better than below
             #ffaces = frontalface.detectMultiScale(image,1.3,4,(cv2.cv.CV_HAAR_DO_CANNY_PRUNING
             #                                                  + cv2.cv.CV_HAAR_FIND_BIGGEST_OBJECT
             #                                                  + cv2.cv.CV_HAAR_DO_ROUGH_SEARCH),(60,60))
